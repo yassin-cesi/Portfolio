@@ -1,40 +1,41 @@
 const db = require("../../config/database"); // Connexion à ta BDD MySQL
 
 // 1. RÉCUPÉRER TOUS LES PROJETS
+const Project = require("../models/Project");
+
 exports.getAllProject = async (req, res) => {
   try {
-    const queryText = "SELECT * FROM Projects";
+    // Le contrôleur demande au modèle de lui donner tous les projets complets
+    const projects = await Project.findAll();
 
-    console.log("=== API APPELÉE : Exécution de la requête SQL ===");
-
-    // Avec mysql2 (ou mysql), le premier élément du tableau destructuré [results] contient tes lignes
-    const [results] = await db.query(queryText);
-
-    // On renvoie directement le résultat (pas de .rows en MySQL !)
-    res.status(200).json(results || []);
+    // On renvoie directement le résultat propre au Front-End
+    res.status(200).json(projects);
   } catch (error) {
-    console.error(error);
+    console.error("Erreur contrôleur projets :", error);
     res
       .status(500)
-      .json({ message: "Erreur lors de la récupération des Projects" });
+      .json({ message: "Erreur lors de la récupération des projets" });
   }
 };
 
 // 2. RÉCUPÉRER UN PROJET PAR SON ID
+// RÉCUPÉRER UN PROJET PAR SON ID
 exports.getProjectById = async (req, res) => {
   const { id } = req.params;
-  try {
-    // Syntaxe MySQL : on utilise un "?" à la place du "$1"
-    const queryText = "SELECT * FROM Projects WHERE IdProject = ?";
-    const [results] = await db.query(queryText, [id]);
 
-    if (!results || results.length === 0) {
+  try {
+    // On appelle notre nouvelle méthode de modèle
+    const project = await Project.findById(id);
+
+    // Si le modèle a renvoyé null, c'est que le projet n'existe pas (404)
+    if (!project) {
       return res.status(404).json({ message: "Projet non trouvé" });
     }
 
-    res.status(200).json(results[0]); // On renvoie le premier et seul projet trouvé
+    // On renvoie l'objet complet trouvé
+    res.status(200).json(project);
   } catch (error) {
-    console.error(error);
+    console.error("Erreur contrôleur getProjectById :", error);
     res
       .status(500)
       .json({ message: "Erreur lors de la récupération du Project" });
