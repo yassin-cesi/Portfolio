@@ -1,0 +1,20 @@
+# Dépendances (à ne jamais push !)
+node_modules/
+__pycache__/
+
+# Fichiers d'environnement (contenant des clés secrètes)
+.env
+.env.local
+
+
+# Dossiers système ou d'éditeurs
+.DS_Store
+.vscode/
+.idea/
+dist/
+build/
+
+*.json
+server.js
+database.js
+config/
