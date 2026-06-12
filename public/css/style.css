@@ -1,0 +1,365 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+:root {
+  --bg-color: #0b0f19; /* Fond sombre profond */
+  --card-bg: #111827; /* Couleur de la carte (tirée de ton image) */
+  --card-border: #1f2937; /* Bordure fine subtile */
+  --text-main: #ffffff;
+  --text-muted: #9ca3af; /* Gris pour la description */
+  --badge-bg: #1e293b; /* Fond des pastilles */
+  --badge-border: #334155; /* Bordure des pastilles */
+  --badge-text: #94a3b8; /* Texte des pastilles */
+  --link-hover: #38bdf8; /* Couleur au survol des liens */
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  margin: 0;
+  padding: 20px;
+}
+/* --- STYLE DE LA NAVBAR (FIGMA) --- */
+header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  display: flex;
+  justify-content: space-between; /* Pousse le titre à gauche et le menu à droite */
+  align-items: center; /* Aligne verticalement le titre et les liens */
+  border-bottom: 1px solid #1e293b; /* Petite ligne fine de séparation */
+}
+
+header h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.03em;
+  background: linear-gradient(to right, #ffffff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; /* Effet de dégradé moderne sur ton nom/titre */
+}
+
+nav {
+  display: flex;
+  gap: 32px; /* Espace régulier entre tes liens */
+}
+
+nav a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.2s ease;
+}
+
+nav a:hover {
+  color: #38bdf8; /* Couleur bleu néon au survol */
+}
+
+/* Petite barre animée sous les liens au survol (très style Figma) */
+nav a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #38bdf8;
+  transition: width 0.2s ease;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+/* Version responsive : si l'écran est petit (smartphone) */
+@media (max-width: 600px) {
+  header {
+    flex-direction: column; /* Aligne le titre au-dessus du menu */
+    gap: 20px;
+    text-align: center;
+  }
+  nav {
+    gap: 20px;
+  }
+}
+/* Grille ultra-responsive */
+.projects-grid {
+  display: grid;
+  /* auto-fit calcule automatiquement le nombre de colonnes selon l'écran */
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+/* Structure de la Carte */
+.project-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px; /* Beaux angles arrondis */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.project-card:hover {
+  border-color: #3b82f6; /* Légère lueur au survol */
+}
+
+/* Zone Image */
+.project-img-wrapper {
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+}
+
+.project-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Contenu textuel */
+.project-info {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.project-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+}
+
+.project-desc {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0 0 20px 0;
+}
+
+/* Zone des Pastilles / Badges */
+.project-badges {
+  display: flex;
+  flex-wrap: wrap; /* Permet aux badges de passer à la ligne si besoin */
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.lang-badge {
+  background-color: var(--badge-bg);
+  border: 1px solid var(--badge-border);
+  color: var(--badge-text);
+  padding: 6px 14px;
+  border-radius: 20px; /* Forme pilule */
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Liens en bas de carte */
+.project-links {
+  margin-top: auto; /* Pousse les liens tout en bas de la carte */
+  display: flex;
+  gap: 20px;
+}
+
+.project-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espace entre l'icône SVG et le texte */
+  transition: color 0.2s ease;
+}
+
+.project-link:hover {
+  color: var(--link-hover);
+}
+
+.icon {
+  transition: transform 0.2s ease;
+}
+
+.project-link:hover .icon {
+  transform: translateY(-2px); /* Petit effet d'animation sympa au survol */
+}
+/* --- LE RESTE DE TON CONFIGURATION RESTE INCHANGÉ, AJOUTE ÇA EN BAS --- */
+
+/* Alignement du bouton dans la carte */
+.project-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-details {
+  background-color: #38bdf8;
+  color: #0b0f19;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+.btn-details:hover {
+  background-color: #0ea5e9;
+}
+
+.btn-details:active {
+  transform: scale(0.96);
+}
+
+/* --- LE CONTENEUR DE LA MODALE --- */
+.modal {
+  display: none; /* Caché par défaut */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(11, 15, 25, 0.8); /* Fond transparent sombre */
+  backdrop-filter: blur(8px); /* Effet de flou de l'arrière-plan */
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* La boîte de dialogue au centre */
+.modal-content {
+  background-color: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 20px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto; /* Permet de scroller si le texte/les images dépassent */
+  padding: 40px;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* La croix de fermeture */
+.close-modal {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  color: #9ca3af;
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-modal:hover {
+  color: #ef4444; /* Devient rouge au survol */
+}
+
+.modal-content h2 {
+  font-size: 2rem;
+  margin-top: 0;
+  color: #ffffff;
+}
+
+.modal-content p {
+  color: #9ca3af;
+  line-height: 1.6;
+  font-size: 1.05rem;
+  margin-bottom: 30px;
+}
+
+/* Grille de la galerie d'images dans la modale */
+.modal-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.modal-gallery-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  transition: transform 0.2s;
+}
+
+.modal-gallery-img:hover {
+  transform: scale(1.02);
+}
+/* --- SYSTEME LIGHTBOX (IMAGE EN GRAND) --- */
+.lightbox {
+  display: none; /* Caché par défaut */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(5, 8, 15, 0.95); /* Fond noir presque total */
+  z-index: 2000; /* Passe par-dessus la première modale */
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.2s ease;
+}
+
+#lightbox-img {
+  max-width: 90%;
+  max-height: 85vh;
+  object-fit: contain; /* Évite toute déformation de l'image */
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  border: 1px solid #334155;
+}
+
+/* Bouton de fermeture de la Lightbox */
+.close-lightbox {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  color: #ffffff;
+  font-size: 45px;
+  font-weight: 300;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    transform 0.2s;
+}
+
+.close-lightbox:hover {
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+/* Curseur en forme de loupe sur les images de la galerie */
+.modal-gallery-img {
+  cursor: zoom-in;
+}
+
+/* Petite animation d'apparition fluide */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

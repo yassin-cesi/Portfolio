@@ -1,17 +1,43 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mon Portfolio</title>
-</head>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Mon Portfolio Professionnel</h1>
+      <nav>
+        <a href="#projects">Projets</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
 
-<body>
-    <h1>Mes Projets</h1>
+    <main>
+      <section id="projects">
+        <h2>Mes Réalisations</h2>
+        <div id="projects-container" class="projects-grid"></div>
+      </section>
+    </main>
 
-    <div id="projects-container">Chargement des projets...</div>
+    <div id="project-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
 
-    <script src="js/main.js"></script>
-</body>
+        <h2 id="modal-title">Titre du Projet</h2>
+        <p id="modal-desc">Description détaillée...</p>
 
+        <h3>Galerie d'images</h3>
+        <div id="modal-gallery" class="modal-gallery"></div>
+      </div>
+    </div>
+    <div id="lightbox" class="lightbox">
+      <span class="close-lightbox">&times;</span>
+      <img id="lightbox-img" src="" alt="Image en grand" />
+    </div>
+
+    <script src="./js/main.js"></script>
+  </body>
 </html>
