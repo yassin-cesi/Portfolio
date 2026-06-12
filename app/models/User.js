@@ -1,17 +1,36 @@
-class User {
-    // Le constructeur définit les propriétés de ton objet
-    constructor(id, firstname, lastname, password, IdRole, IdAddress) {
-        this.id = id;                 // ID unique (souvent géré par la BDD)
-        this.firstname = firstname;           // Titre de l'article
-        this.lastname = lastname;       // Contenu textuel
-        this.password = password;
-        this.IdRole = IdRole;        // Auteur de l'article
-        this.IdAddress = IdAddress;
-    }
+const db = require("../../config/database");
 
-    // Une méthode utile si tu veux formater tes données avant de les envoyer au HTML
-    getExcerpt() {
-        return this.content.substring(0, 100) + '...';
+class User {
+  constructor(id, firstName, lastName, email, password, idRole) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.password = password; // Contien le mot de passe haché
+    this.idRole = idRole;
+  }
+
+  // Trouver un utilisateur par son email pour la connexion
+  static async findByEmail(email) {
+    try {
+      const [rows] = await db.query("SELECT * FROM USERS WHERE Email = ?", [
+        email,
+      ]);
+      if (rows.length === 0) return null;
+
+      const u = rows[0];
+      return new User(
+        u.IdUser,
+        u.FirstName,
+        u.LastName,
+        u.Email,
+        u.Password,
+        u.IdRole,
+      );
+    } catch (error) {
+      throw error;
     }
+  }
 }
 
+module.exports = User;
