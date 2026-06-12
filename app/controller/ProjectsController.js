@@ -1,181 +1,181 @@
-const db = require("../../config/database"); // Connexion à ta BDD MySQL
-
-// 1. RÉCUPÉRER TOUS LES PROJETS
+const db = require("../../config/database");
 const Project = require("../models/Project");
 
+// 1. RÉCUPÉRER TOUS LES PROJETS
 exports.getAllProject = async (req, res) => {
   try {
-    // Le contrôleur demande au modèle de lui donner tous les projets complets
     const projects = await Project.findAll();
-
-    // On renvoie directement le résultat propre au Front-End
     res.status(200).json(projects);
   } catch (error) {
-    console.error("Erreur contrôleur projets :", error);
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la récupération des projets" });
+    console.error("Erreur getAllProject :", error);
+    res.status(500).json({ message: "Erreur lors de la récupération" });
   }
 };
 
-// 2. RÉCUPÉRER UN PROJET PAR SON ID
-// RÉCUPÉRER UN PROJET PAR SON ID
+// 2. RÉCUPÉRER PAR ID
 exports.getProjectById = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    // On appelle notre nouvelle méthode de modèle
-    const project = await Project.findById(id);
-
-    // Si le modèle a renvoyé null, c'est que le projet n'existe pas (404)
-    if (!project) {
-      return res.status(404).json({ message: "Projet non trouvé" });
-    }
-
-    // On renvoie l'objet complet trouvé
+    const project = await Project.findById(req.params.id);
+    if (!project) return res.status(404).json({ message: "Projet non trouvé" });
     res.status(200).json(project);
   } catch (error) {
-    console.error("Erreur contrôleur getProjectById :", error);
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la récupération du Project" });
+    res.status(500).json({ message: "Erreur serveur" });
   }
 };
 
 // 3. CRÉER UN PROJET
 exports.createProject = async (req, res) => {
-  // On récupère toutes les données du projet envoyées par Postman
-  const {
-    Title,
-    Description,
-    Github_Link,
-    Github_Link_2,
-    IdType,
-    languages,
-    images,
-  } = req.body;
-
-  // On récupère une connexion spécifique du pool pour gérer la Transaction
   const connection = await db.getConnection();
-
   try {
-    // -------------------------------------------------------------------------
-    // ÉTAPE 1 : Démarrer la transaction SQL
-    // -------------------------------------------------------------------------
-    await connection.beginTransaction();
-
-    // -------------------------------------------------------------------------
-    // ÉTAPE 2 : Insertion dans la table 'projects' (Étape 3 de ton script SQL)
-    // -------------------------------------------------------------------------
-    const projectQuery = `
-      INSERT INTO projects (Title, Description, Github_Link, Github_Link_2, IdType) 
-      VALUES (?, ?, ?, ?, ?)
-    `;
-    const [projectResult] = await connection.query(projectQuery, [
+    const {
       Title,
       Description,
       Github_Link,
       Github_Link_2,
-      IdType, // L'Id du type (ex: 1 pour "CESI - Project Collaboratif")
-    ]);
+      TypeName,
+      languages,
+    } = req.body;
 
-    // On récupère l'ID du projet qui vient d'être généré automatiquement par MySQL
-    const newProjectId = projectResult.insertId;
+    if (!req.files || req.files.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Au moins une image est obligatoire." });
+    }
 
-    // -------------------------------------------------------------------------
-    // ÉTAPE 3 : Insertion dans la table 'project_language' (Étape 4 de ton script SQL)
-    // -------------------------------------------------------------------------
-    // On vérifie que le tableau "languages" a bien été envoyé et n'est pas vide (ex: [1, 2])
-    if (languages && languages.length > 0) {
-      const languageQuery =
-        "INSERT INTO project_language (IdProject, IdLanguage) VALUES (?, ?)";
+    await connection.beginTransaction();
 
-      for (const idLanguage of languages) {
-        // On lie le nouvel ID du projet avec l'ID du langage
-        await connection.query(languageQuery, [newProjectId, idLanguage]);
+    let finalTypeId = null;
+    if (TypeName && TypeName.trim() !== "") {
+      const [rows] = await connection.query(
+        "SELECT IdType FROM types WHERE Name = ?",
+        [TypeName.trim()],
+      );
+      if (rows.length > 0) finalTypeId = rows[0].IdType;
+      else {
+        const [result] = await connection.query(
+          "INSERT INTO types (Name) VALUES (?)",
+          [TypeName.trim()],
+        );
+        finalTypeId = result.insertId;
       }
     }
 
-    // -------------------------------------------------------------------------
-    // ÉTAPE 4 : Insertion dans la table 'project_images' (Étape 5 de ton script SQL)
-    // -------------------------------------------------------------------------
-    // On vérifie si un tableau d'images a été envoyé
-    if (images && images.length > 0) {
-      const imageQuery =
-        "INSERT INTO project_images (ImageUrl, IsMain, IdProject) VALUES (?, ?, ?)";
+    const [project] = await connection.query(
+      "INSERT INTO projects (Title, Description, Github_Link, Github_Link_2, IdType) VALUES (?, ?, ?, ?, ?)",
+      [
+        Title,
+        Description,
+        Github_Link || null,
+        Github_Link_2 || null,
+        finalTypeId,
+      ],
+    );
+    const newProjectId = project.insertId;
 
-      for (const img of images) {
-        // On force ou on vérifie que le chemin commence bien par /images/ et pas par du relatif
-        let cleanUrl = img.ImageUrl;
-        if (cleanUrl.startsWith("../../public/")) {
-          cleanUrl = cleanUrl.replace("../../public/", "/");
-        }
+    for (let i = 0; i < req.files.length; i++) {
+      await connection.query(
+        "INSERT INTO project_images (ImageUrl, IsMain, IdProject) VALUES (?, ?, ?)",
+        [`images/${req.files[i].filename}`, i === 0 ? 1 : 0, newProjectId],
+      );
+    }
 
-        await connection.query(imageQuery, [
-          cleanUrl,
-          img.IsMain,
-          newProjectId,
-        ]);
+    if (languages) {
+      const langNames = languages
+        .split(",")
+        .map((l) => l.trim())
+        .filter((l) => l !== "");
+      for (const name of langNames) {
+        let [rows] = await connection.query(
+          "SELECT IdLanguage FROM languages WHERE Name = ?",
+          [name],
+        );
+        let langId =
+          rows.length > 0
+            ? rows[0].IdLanguage
+            : (
+                await connection.query(
+                  "INSERT INTO languages (Name) VALUES (?)",
+                  [name],
+                )
+              )[0].insertId;
+        await connection.query(
+          "INSERT INTO project_language (IdProject, IdLanguage) VALUES (?, ?)",
+          [newProjectId, langId],
+        );
       }
     }
 
-    // -------------------------------------------------------------------------
-    // ÉTAPE 5 : Validation finale de la transaction
-    // -------------------------------------------------------------------------
-    // Si toutes les requêtes précédentes ont fonctionné sans erreur, on enregistre tout d'un coup !
     await connection.commit();
-
-    // Réponse de succès envoyée à Postman
-    res.status(201).json({
-      message: "Projet complet créé avec succès dans toutes les tables !",
-      projectId: newProjectId,
-    });
+    res
+      .status(201)
+      .json({ message: "Projet créé avec succès !", projectId: newProjectId });
   } catch (error) {
-    // -------------------------------------------------------------------------
-    // EN CAS D'ERREUR : Annulation totale (Rollback)
-    // -------------------------------------------------------------------------
-    // Si n'importe quelle insertion plante (ex: mauvaise clé étrangère), on annule TOUT
     await connection.rollback();
-    console.error("❌ Erreur lors de la transaction, BDD restaurée :", error);
-
-    res.status(500).json({
-      message: "Erreur lors de la création complète du Projet",
-      error: error.message,
-    });
+    res
+      .status(500)
+      .json({ message: "Erreur lors de la création", error: error.message });
   } finally {
-    // Toujours libérer la connexion pour éviter de bloquer la base de données
     connection.release();
   }
 };
 
-// 4. SUPPRIMER UN PROJET
+// 4. SUPPRIMER UN PROJET (Ajouté car manquant)
 exports.deleteProject = async (req, res) => {
-  const { id } = req.params;
   try {
-    await db.query("DELETE FROM Projects WHERE IdProject = ?", [id]);
+    await db.query("DELETE FROM projects WHERE IdProject = ?", [req.params.id]);
     res.status(200).json({ message: "Projet supprimé avec succès !" });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Erreur lors de la suppression du projet" });
+    res.status(500).json({ message: "Erreur lors de la suppression" });
   }
 };
 
 // 5. METTRE À JOUR UN PROJET
 exports.updateProject = async (req, res) => {
   const { id } = req.params;
-  const { Title, Description, Github_Link, Github_Link_2, IdType } = req.body;
+  const { Title, Description, Github_Link, Github_Link_2, TypeName } = req.body;
+
   try {
+    let finalTypeId = null;
+    if (TypeName && TypeName.trim() !== "") {
+      const [rows] = await db.query("SELECT IdType FROM types WHERE Name = ?", [
+        TypeName.trim(),
+      ]);
+      finalTypeId =
+        rows.length > 0
+          ? rows[0].IdType
+          : (
+              await db.query("INSERT INTO types (Name) VALUES (?)", [
+                TypeName.trim(),
+              ])
+            )[0].insertId;
+    }
+
     await db.query(
-      "UPDATE Projects SET Title = ?, Description = ?, Github_Link = ?, Github_Link_2 = ?, IdType = ? WHERE IdProject = ?",
-      [Title, Description, Github_Link, Github_Link_2, IdType, id],
+      "UPDATE projects SET Title = ?, Description = ?, Github_Link = ?, Github_Link_2 = ?, IdType = ? WHERE IdProject = ?",
+      [
+        Title,
+        Description,
+        Github_Link || null,
+        Github_Link_2 || null,
+        finalTypeId,
+        id,
+      ],
     );
-    res.status(200).json({ message: "Projet mis à jour avec succès !" });
+
+    if (req.files && req.files.length > 0) {
+      await db.query("DELETE FROM project_images WHERE IdProject = ?", [id]);
+      for (let i = 0; i < req.files.length; i++) {
+        await db.query(
+          "INSERT INTO project_images (ImageUrl, IsMain, IdProject) VALUES (?, ?, ?)",
+          [`images/${req.files[i].filename}`, i === 0 ? 1 : 0, id],
+        );
+      }
+    }
+
+    res.status(200).json({ message: "Mise à jour réussie !" });
   } catch (error) {
-    console.error(error);
     res
       .status(500)
-      .json({ message: "Erreur lors de la mise à jour du projet" });
+      .json({ message: "Erreur lors de la mise à jour", error: error.message });
   }
 };

@@ -38,68 +38,115 @@
       </section>
 
       <section id="tab-add-project" class="admin-section">
-        <h2>Ajouter un Nouveau Projet</h2>
-        <form id="add-project-form" class="admin-form">
-          <div class="form-group">
-            <label for="proj-title">Titre du projet</label>
-            <input
-              type="text"
-              id="proj-title"
-              required
-              placeholder="Ex: WineShop APP"
-            />
+        <div class="project-manager-container">
+          <div class="form-container-box">
+            <h2 id="form-project-title">Ajouter un Nouveau Projet</h2>
+            <form id="add-project-form" class="admin-form">
+              <input type="hidden" id="proj-id" value="" />
+
+              <div class="form-group">
+                <label for="proj-title">Titre du projet</label>
+                <input
+                  type="text"
+                  id="proj-title"
+                  required
+                  placeholder="Ex: WineShop APP"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="proj-desc">Description</label>
+                <textarea
+                  id="proj-desc"
+                  required
+                  rows="5"
+                  placeholder="Explique en quelques lignes l'objectif du projet..."
+                ></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="proj-link1">Lien GitHub (Principal)</label>
+                  <input
+                    type="url"
+                    id="proj-link1"
+                    placeholder="https://github.com/mon-repo"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="proj-link2"
+                    >Lien GitHub 2 / Site (Optionnel)</label
+                  >
+                  <input type="url" id="proj-link2" placeholder="https://..." />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="proj-languages">Technologies / Langages</label>
+                  <input
+                    type="text"
+                    id="proj-languages"
+                    placeholder="Ex: React, Node.js, MySQL"
+                  />
+                  <small class="helper-text"
+                    >Séparez les langages par une virgule.</small
+                  >
+                </div>
+                <div class="form-group">
+                  <label for="proj-type">Type de projet</label>
+                  <input
+                    type="text"
+                    id="proj-type"
+                    placeholder="Ex: CESI, Projet Personnel"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-group" id="image-input-group">
+                <label for="proj-image"
+                  >Sélectionner les images du projet</label
+                >
+                <input type="file" id="proj-image" accept="image/*" multiple />
+                <small
+                  id="image-helper"
+                  class="info-helper"
+                  style="display: none"
+                  >ℹ️ Laissez vide si vous ne souhaitez pas modifier les photos
+                  actuelles.</small
+                >
+              </div>
+
+              <div class="form-actions">
+                <button
+                  type="submit"
+                  id="btn-project-submit"
+                  class="btn-submit"
+                >
+                  Publier le projet
+                </button>
+                <button
+                  type="button"
+                  id="btn-cancel-edit"
+                  class="btn-cancel"
+                  style="display: none"
+                  onclick="resetProjectForm()"
+                >
+                  Annuler la modification
+                </button>
+              </div>
+              <p id="project-response"></p>
+            </form>
           </div>
-          <div class="form-group">
-            <label for="proj-desc">Description</label>
-            <textarea
-              id="proj-desc"
-              required
-              rows="5"
-              placeholder="Détails du projet..."
-            ></textarea>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="proj-link1">Lien GitHub (Principal / API)</label>
-              <input
-                type="url"
-                id="proj-link1"
-                placeholder="https://github.com/..."
-              />
+
+          <div class="admin-projects-sidebar">
+            <h3>Mes projets en ligne</h3>
+            <div id="admin-projects-list" class="admin-grid-list">
+              <p class="loading-text">Chargement de vos réalisations...</p>
             </div>
-            <div class="form-group">
-              <label for="proj-link2">Lien GitHub 2 (Optionnel / Front)</label>
-              <input
-                type="url"
-                id="proj-link2"
-                placeholder="https://github.com/..."
-              />
-            </div>
           </div>
-          <div class="form-group">
-            <label for="proj-languages"
-              >Technologies / Langages (Séparés par des virgules)</label
-            >
-            <input
-              type="text"
-              id="proj-languages"
-              placeholder="Ex: C#, SQL, React Native"
-            />
-          </div>
-          <div class="form-group">
-            <label for="proj-image">URL de l'image principale</label>
-            <input
-              type="text"
-              id="proj-image"
-              required
-              placeholder="Ex: images/img_bdd_wineshop/wineshop_accueil.png"
-            />
-          </div>
-          <button type="submit" class="btn-admin-submit">
-            Publier le projet
-          </button>
-          <p id="project-response"></p>
-        </form>
+        </div>
       </section>
 
       <section id="tab-calendar" class="admin-section">
