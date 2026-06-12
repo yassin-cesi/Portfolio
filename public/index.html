@@ -19,24 +19,76 @@
       <section id="projects">
         <h2>Mes Réalisations</h2>
         <div id="projects-container" class="projects-grid"></div>
+        <div id="project-modal" class="modal">
+          <div class="modal-content">
+            <span class="close-modal">&times;</span>
+
+            <h2 id="modal-title">Titre du Projet</h2>
+            <p id="modal-desc">Description détaillée...</p>
+
+            <h3>Galerie d'images</h3>
+            <div id="modal-gallery" class="modal-gallery"></div>
+          </div>
+        </div>
+        <div id="lightbox" class="lightbox">
+          <span class="close-lightbox">&times;</span>
+          <img id="lightbox-img" src="" alt="Image en grand" />
+        </div>
       </section>
     </main>
 
-    <div id="project-modal" class="modal">
-      <div class="modal-content">
-        <span class="close-modal">&times;</span>
+    <section id="contact">
+      <h2>Me contacter</h2>
+      <p class="contact-subtitle">
+        Un projet, une opportunité ou une simple question ? Écrivez-moi !
+      </p>
 
-        <h2 id="modal-title">Titre du Projet</h2>
-        <p id="modal-desc">Description détaillée...</p>
+      <div class="contact-container">
+        <form id="contact-form">
+          <div class="form-group">
+            <label for="name">Nom / Entreprise</label>
+            <input
+              type="text"
+              id="name"
+              required
+              placeholder="Ex: Développeurs & Co"
+            />
+          </div>
 
-        <h3>Galerie d'images</h3>
-        <div id="modal-gallery" class="modal-gallery"></div>
+          <div class="form-group">
+            <label for="email">Adresse Email</label>
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="Ex: contact@entreprise.fr"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Objet</label>
+            <input
+              type="text"
+              id="subject"
+              placeholder="Ex: Proposition d'alternance / Stage"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="content">Message</label>
+            <textarea
+              id="content"
+              required
+              rows="6"
+              placeholder="Votre message ici..."
+            ></textarea>
+          </div>
+
+          <button type="submit" id="btn-submit">Envoyer le message</button>
+          <p id="form-response" class="form-response"></p>
+        </form>
       </div>
-    </div>
-    <div id="lightbox" class="lightbox">
-      <span class="close-lightbox">&times;</span>
-      <img id="lightbox-img" src="" alt="Image en grand" />
-    </div>
+    </section>
 
     <script src="./js/main.js"></script>
   </body>

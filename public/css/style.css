@@ -86,6 +86,18 @@ nav a:hover::after {
     gap: 20px;
   }
 }
+#projects h2 {
+  text-align: center; /* Centre le texte horizontalement */
+  font-size: 2.5rem; /* Donne une taille imposante au titre */
+  font-weight: 700; /* Épaisseur de police marquée */
+  margin: 60px 0 40px 0; /* Ajoute de l'espace au-dessus et en dessous */
+  letter-spacing: -0.03em; /* Rapproche légèrement les lettres (effet Figma) */
+
+  /* Optionnel : Le joli dégradé de couleur comme sur la Navbar */
+  background: linear-gradient(to right, #ffffff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 /* Grille ultra-responsive */
 .projects-grid {
   display: grid;
@@ -363,3 +375,365 @@ nav a:hover::after {
     opacity: 1;
   }
 }
+
+/* --- SECTION CONTACT --- */
+#contact {
+  max-width: 600px; /* Formulaire centré et pas trop large */
+  margin: 100px auto 60px auto;
+  padding: 0 20px;
+}
+
+#contact h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-align: center;
+  letter-spacing: -0.05em;
+}
+
+.contact-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+}
+
+.contact-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #e5e7eb;
+}
+
+/* Inputs et Textarea stylisés style Figma */
+.form-group input,
+.form-group textarea {
+  background-color: #0b0f19;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+}
+
+/* Bouton d'envoi large */
+#btn-submit {
+  width: 100%;
+  background-color: #38bdf8;
+  color: #0b0f19;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+#btn-submit:hover {
+  background-color: #0ea5e9;
+}
+
+#btn-submit:disabled {
+  background-color: #4b5563;
+  cursor: not-allowed;
+}
+
+/* Messages de retour d'état */
+.form-response {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.form-response.success {
+  color: #10b981;
+} /* Vert */
+.form-response.error {
+  color: #ef4444;
+} /* Rouge */
+
+/* =============================== VUE APPLICATION ADMIN =================================*/
+.admin-body {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0b0f19;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+/* Barre latérale gauche */
+.admin-sidebar {
+  width: 260px;
+  background-color: #111827;
+  border-right: 1px solid #1f2937;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar h2 {
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin-bottom: 40px;
+  padding-left: 10px;
+  border-left: 4px solid #38bdf8;
+}
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-nav a {
+  color: #9ca3af;
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
+.admin-nav a:hover,
+.admin-nav a.active {
+  background-color: #1e293b;
+  color: #38bdf8;
+}
+
+.admin-nav a.back-site {
+  margin-top: 50px;
+  border-top: 1px solid #1f2937;
+  padding-top: 20px;
+  color: #e5e7eb;
+}
+
+/* Zone de contenu principale */
+.admin-content {
+  flex-grow: 1;
+  padding: 40px;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.admin-section {
+  display: none; /* Masqué par défaut */
+}
+
+.admin-section.active {
+  display: block; /* Affiché quand actif */
+}
+
+.admin-content h2 {
+  font-size: 2rem;
+  margin-top: 0;
+  margin-bottom: 30px;
+}
+
+/* Formulaire Admin */
+.admin-form {
+  background-color: #111827;
+  border: 1px solid #1f2937;
+  padding: 32px;
+  border-radius: 16px;
+  max-width: 800px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.btn-admin-submit {
+  background-color: #38bdf8;
+  color: #0b0f19;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-admin-submit:hover {
+  background-color: #0ea5e9;
+}
+
+/* Cartes des messages reçus */
+.message-admin-card {
+  background-color: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.msg-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.msg-email {
+  color: #38bdf8;
+  font-size: 0.9rem;
+}
+
+.msg-subject {
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-bottom: 12px;
+}
+
+.msg-content {
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Design du Calendrier */
+.calendar-placeholder {
+  background-color: #111827;
+  border: 2px dashed #1f2937;
+  border-radius: 16px;
+  padding: 8px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #9ca3af;
+}
+/* =============================== FIN DE LA VUE ADMIN ================================== */
+/* --- COMPLÉMENT STYLE LOGIN --- */
+.login-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #0b0f19;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+.login-container {
+  background-color: #111827;
+  border: 1px solid #1f2937;
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.login-container h2 {
+  color: #ffffff;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Structure pour aligner l'input et le bouton œil sur la même ligne */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 45px; /* Laisse de la place pour l'œil à droite */
+  box-sizing: border-box;
+}
+
+/* Le bouton œil transparent */
+.toggle-password-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.toggle-password-btn:hover {
+  color: #38bdf8;
+}
+
+/* LE BOUTON CONNECTER STYLISÉ */
+#btn-login {
+  width: 100%;
+  background-color: #38bdf8;
+  color: #0b0f19;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+#btn-login:hover {
+  background-color: #0ea5e9;
+}
+
+#btn-login:active {
+  transform: scale(0.98);
+}
+
+#btn-login:disabled {
+  background-color: #4b5563;
+  cursor: not-allowed;
+}
+
+.error-msg {
+  color: #ef4444;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+/* =============================== FIN LOGIN =============================== */

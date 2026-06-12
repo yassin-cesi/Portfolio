@@ -148,3 +148,63 @@ function setupModalEvents() {
 }
 
 document.addEventListener("DOMContentLoaded", loadProjects);
+
+// --- GESTION DU FORMULAIRE DE CONTACT ---
+document.addEventListener("DOMContentLoaded", () => {
+  const contactForm = document.getElementById("contact-form");
+  const formResponse = document.getElementById("form-response");
+  const submitBtn = document.getElementById("btn-submit");
+
+  if (contactForm) {
+    contactForm.addEventListener("submit", async (e) => {
+      e.preventDefault(); // Empêche la page de se recharger
+
+      // Désactive le bouton pendant l'envoi pour éviter les doubles clics
+      submitBtn.innerText = "Envoi en cours...";
+      submitBtn.disabled = true;
+
+      // Récupération des valeurs du formulaire
+      const formData = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        subject: document.getElementById("subject").value,
+        content: document.getElementById("content").value,
+      };
+
+      try {
+        // Appel à ton API de messages
+        const response = await fetch("http://localhost:3000/api/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          // Succès
+          formResponse.innerText =
+            "✨ " + (result.message || "Message envoyé avec succès !");
+          formResponse.className = "form-response success";
+          contactForm.reset(); // Vide les champs du formulaire
+        } else {
+          // Erreur renvoyée par le serveur
+          formResponse.innerText =
+            "❌ " + (result.message || "Une erreur est survenue.");
+          formResponse.className = "form-response error";
+        }
+      } catch (error) {
+        console.error("Erreur formulaire:", error);
+        formResponse.innerText =
+          "❌ Impossible de joindre le serveur pour le moment.";
+        formResponse.className = "form-response error";
+      } finally {
+        // Réactive le bouton
+        submitBtn.innerText = "Envoyer le message";
+        submitBtn.disabled = false;
+      }
+    });
+  }
+});
