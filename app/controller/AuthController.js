@@ -23,7 +23,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       { userId: user.id, idRole: user.idRole },
       secretKey,
-      { expiresIn: "24h" },
+      { expiresIn: "30m" },
     );
 
     // 4. Renvoyer le jeton au Front-End

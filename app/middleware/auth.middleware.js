@@ -25,8 +25,13 @@ module.exports = (req, res, next) => {
     req.auth = { userId: decodedToken.userId, idRole: decodedToken.idRole };
     next();
   } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({ message: "Jeton expiré. Veuillez vous reconnecter." });
+    }
     res
       .status(401)
-      .json({ message: "Requête non authentifiée ou jeton expiré !" });
+      .json({ message: "Requête non authentifiée ou jeton invalide !" });
   }
 };

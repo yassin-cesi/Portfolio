@@ -14,7 +14,5 @@ __pycache__/
 dist/
 build/
 
-*.json
-server.js
-database.js
-config/
+package-lock.json
+

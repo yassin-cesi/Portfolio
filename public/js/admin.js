@@ -259,7 +259,17 @@ document
         body: formData, // Envoi direct du FormData multi-fichiers
       });
 
-      const result = await response.json();
+      // Lecture sécurisée : le serveur peut renvoyer du texte brut en cas de crash
+      let result;
+      const rawText = await response.text();
+      try {
+        result = JSON.parse(rawText);
+      } catch {
+        console.error("Réponse non-JSON du serveur :", rawText);
+        responseText.innerText = `❌ Réponse inattendue du serveur. Détails dans la console (F12).`;
+        responseText.style.color = "#ef4444";
+        return;
+      }
 
       if (response.ok) {
         responseText.innerText = isEditing
@@ -270,12 +280,14 @@ document
         resetProjectForm(); // On vide et on repasse en mode "Ajout"
         fetchAdminProjects(); // On rafraîchit la liste de droite
       } else {
-        responseText.innerText = `❌ Erreur : ${result.message || "Action impossible"}`;
+        // Affiche le message d'erreur précis renvoyé par le serveur
+        responseText.innerText = `❌ Erreur ${response.status} : ${result.message || result.error || "Action impossible"}`;
         responseText.style.color = "#ef4444";
+        console.error("Détail erreur serveur :", result);
       }
     } catch (error) {
       console.error("Erreur envoi formulaire admin:", error);
-      responseText.innerText = "❌ Erreur de connexion au serveur.";
+      responseText.innerText = `❌ Erreur réseau : ${error.message}`;
       responseText.style.color = "#ef4444";
     }
   });
