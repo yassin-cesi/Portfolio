@@ -132,25 +132,39 @@ exports.deleteProject = async (req, res) => {
 // 5. METTRE À JOUR UN PROJET
 exports.updateProject = async (req, res) => {
   const { id } = req.params;
-  const { Title, Description, Github_Link, Github_Link_2, TypeName } = req.body;
+  const {
+    Title,
+    Description,
+    Github_Link,
+    Github_Link_2,
+    TypeName,
+    languages,
+  } = req.body;
+  const connection = await db.getConnection();
 
   try {
+    await connection.beginTransaction();
+
+    // Résolution du type
     let finalTypeId = null;
     if (TypeName && TypeName.trim() !== "") {
-      const [rows] = await db.query("SELECT IdType FROM types WHERE Name = ?", [
-        TypeName.trim(),
-      ]);
-      finalTypeId =
-        rows.length > 0
-          ? rows[0].IdType
-          : (
-              await db.query("INSERT INTO types (Name) VALUES (?)", [
-                TypeName.trim(),
-              ])
-            )[0].insertId;
+      const [rows] = await connection.query(
+        "SELECT IdType FROM types WHERE Name = ?",
+        [TypeName.trim()],
+      );
+      if (rows.length > 0) {
+        finalTypeId = rows[0].IdType;
+      } else {
+        const [result] = await connection.query(
+          "INSERT INTO types (Name) VALUES (?)",
+          [TypeName.trim()],
+        );
+        finalTypeId = result.insertId;
+      }
     }
 
-    await db.query(
+    // Mise à jour des champs principaux
+    await connection.query(
       "UPDATE projects SET Title = ?, Description = ?, Github_Link = ?, Github_Link_2 = ?, IdType = ? WHERE IdProject = ?",
       [
         Title,
@@ -162,20 +176,70 @@ exports.updateProject = async (req, res) => {
       ],
     );
 
+    // Mise à jour des images (seulement si de nouvelles images sont envoyées)
     if (req.files && req.files.length > 0) {
-      await db.query("DELETE FROM project_images WHERE IdProject = ?", [id]);
+      // Suppression des anciennes images du dossier public
+      const fs = require("fs");
+      const path = require("path");
+      const [oldImages] = await connection.query(
+        "SELECT ImageUrl FROM project_images WHERE IdProject = ?",
+        [id],
+      );
+      for (const img of oldImages) {
+        const filePath = path.join(__dirname, "../../public", img.ImageUrl);
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      }
+
+      await connection.query("DELETE FROM project_images WHERE IdProject = ?", [
+        id,
+      ]);
       for (let i = 0; i < req.files.length; i++) {
-        await db.query(
+        await connection.query(
           "INSERT INTO project_images (ImageUrl, IsMain, IdProject) VALUES (?, ?, ?)",
           [`images/${req.files[i].filename}`, i === 0 ? 1 : 0, id],
         );
       }
     }
 
+    // Mise à jour des langages (si envoyés)
+    if (languages !== undefined) {
+      await connection.query(
+        "DELETE FROM project_language WHERE IdProject = ?",
+        [id],
+      );
+      const langNames = languages
+        .split(",")
+        .map((l) => l.trim())
+        .filter((l) => l !== "");
+      for (const name of langNames) {
+        const [rows] = await connection.query(
+          "SELECT IdLanguage FROM languages WHERE Name = ?",
+          [name],
+        );
+        const langId =
+          rows.length > 0
+            ? rows[0].IdLanguage
+            : (
+                await connection.query(
+                  "INSERT INTO languages (Name) VALUES (?)",
+                  [name],
+                )
+              )[0].insertId;
+        await connection.query(
+          "INSERT INTO project_language (IdProject, IdLanguage) VALUES (?, ?)",
+          [id, langId],
+        );
+      }
+    }
+
+    await connection.commit();
     res.status(200).json({ message: "Mise à jour réussie !" });
   } catch (error) {
+    await connection.rollback();
     res
       .status(500)
       .json({ message: "Erreur lors de la mise à jour", error: error.message });
+  } finally {
+    connection.release();
   }
 };
