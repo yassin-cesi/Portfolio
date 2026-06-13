@@ -16,9 +16,17 @@ exports.sendMessage = async (req, res) => {
   try {
     const { name, email, subject, content } = req.body;
 
-    if (!name || !email || !content) {
+    if (!name || !email || !subject || !content) {
       return res.status(400).json({
-        message: "Les champs Nom, Email et Message sont obligatoires.",
+        message:
+          "Tous les champs (Nom, Email, Objet et Message) sont obligatoires.",
+      });
+    }
+
+    // Vérifier que ce ne sont pas juste des espaces
+    if (!name.trim() || !email.trim() || !subject.trim() || !content.trim()) {
+      return res.status(400).json({
+        message: "Tous les champs doivent contenir du texte.",
       });
     }
 

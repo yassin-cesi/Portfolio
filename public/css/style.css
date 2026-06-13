@@ -1,33 +1,72 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
+/* =====================================================================
+   VARIABLES — Thème Sombre (défaut)
+   ===================================================================== */
 :root {
-  --bg-color: #0b0f19; /* Fond sombre profond */
-  --card-bg: #111827; /* Couleur de la carte (tirée de ton image) */
-  --card-border: #1f2937; /* Bordure fine subtile */
+  --bg-color: #0b0f19;
+  --card-bg: #111827;
+  --card-border: #1f2937;
   --text-main: #ffffff;
-  --text-muted: #9ca3af; /* Gris pour la description */
-  --badge-bg: #1e293b; /* Fond des pastilles */
-  --badge-border: #334155; /* Bordure des pastilles */
-  --badge-text: #94a3b8; /* Texte des pastilles */
-  --link-hover: #38bdf8; /* Couleur au survol des liens */
+  --text-color: #f0f0f0;
+  --text-muted: #9ca3af;
+  --badge-bg: #1e293b;
+  --badge-border: #334155;
+  --badge-text: #94a3b8;
+  --link-hover: #38bdf8;
+  --input-bg: #0b0f19;
+  --input-border: #1f2937;
+  --label-color: #e5e7eb;
+  --file-btn-bg: #374151;
+  --file-btn-hover: #4b5563;
 }
 
+/* =====================================================================
+   VARIABLES — Thème Clair
+   ===================================================================== */
+body.light-mode {
+  --bg-color: #ffffff;
+  --card-bg: #f9fafb;
+  --card-border: #e5e7eb;
+  --text-main: #111827;
+  --text-color: #333333;
+  --text-muted: #6b7280;
+  --badge-bg: #e2e8f0;
+  --badge-border: #cbd5e1;
+  --badge-text: #475569;
+  --link-hover: #0284c7;
+  --input-bg: #f3f4f6;
+  --input-border: #d1d5db;
+  --label-color: #374151;
+  --file-btn-bg: #e5e7eb;
+  --file-btn-hover: #d1d5db;
+}
+
+/* =====================================================================
+   BASE
+   ===================================================================== */
 body {
   font-family: "Inter", sans-serif;
   background-color: var(--bg-color);
-  color: var(--text-main);
+  color: var(--text-color);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
   margin: 0;
   padding: 20px;
 }
-/* --- STYLE DE LA NAVBAR (FIGMA) --- */
+
+/* =====================================================================
+   HEADER & NAVBAR
+   ===================================================================== */
 header {
   max-width: 1200px;
   margin: 0 auto;
   padding: 30px 20px;
   display: flex;
-  justify-content: space-between; /* Pousse le titre à gauche et le menu à droite */
-  align-items: center; /* Aligne verticalement le titre et les liens */
-  border-bottom: 1px solid #1e293b; /* Petite ligne fine de séparation */
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1e293b;
 }
 
 header h1 {
@@ -35,14 +74,14 @@ header h1 {
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.03em;
-  background: linear-gradient(to right, #ffffff, #94a3b8);
+  background: linear-gradient(to right, #a4bad8, #1f2937);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent; /* Effet de dégradé moderne sur ton nom/titre */
+  -webkit-text-fill-color: transparent;
 }
 
 nav {
   display: flex;
-  gap: 32px; /* Espace régulier entre tes liens */
+  gap: 32px;
 }
 
 nav a {
@@ -56,10 +95,9 @@ nav a {
 }
 
 nav a:hover {
-  color: #38bdf8; /* Couleur bleu néon au survol */
+  color: #38bdf8;
 }
 
-/* Petite barre animée sous les liens au survol (très style Figma) */
 nav a::after {
   content: "";
   position: absolute;
@@ -75,10 +113,9 @@ nav a:hover::after {
   width: 100%;
 }
 
-/* Version responsive : si l'écran est petit (smartphone) */
 @media (max-width: 600px) {
   header {
-    flex-direction: column; /* Aligne le titre au-dessus du menu */
+    flex-direction: column;
     gap: 20px;
     text-align: center;
   }
@@ -86,33 +123,111 @@ nav a:hover::after {
     gap: 20px;
   }
 }
-#projects h2 {
-  text-align: center; /* Centre le texte horizontalement */
-  font-size: 2.5rem; /* Donne une taille imposante au titre */
-  font-weight: 700; /* Épaisseur de police marquée */
-  margin: 60px 0 40px 0; /* Ajoute de l'espace au-dessus et en dessous */
-  letter-spacing: -0.03em; /* Rapproche légèrement les lettres (effet Figma) */
 
-  /* Optionnel : Le joli dégradé de couleur comme sur la Navbar */
-  background: linear-gradient(to right, #ffffff, #94a3b8);
+/* =====================================================================
+   TOGGLE DARK / LIGHT MODE
+   ===================================================================== */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 28px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 999px;
+  transition:
+    background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.slider-thumb {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  top: 2px;
+  left: 3px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition:
+    left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.35s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider-thumb svg {
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  transition: opacity 0.25s ease;
+}
+
+.slider-thumb .icon-moon {
+  opacity: 1;
+}
+.slider-thumb .icon-sun {
+  opacity: 0;
+}
+
+input:checked ~ .slider {
+  background-color: #0284c7;
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+input:checked ~ .slider .slider-thumb {
+  left: 31px;
+  box-shadow: 0 1px 6px rgba(56, 189, 248, 0.35);
+}
+
+input:checked ~ .slider .icon-moon {
+  opacity: 0;
+}
+input:checked ~ .slider .icon-sun {
+  opacity: 1;
+}
+
+/* =====================================================================
+   SECTION PROJETS
+   ===================================================================== */
+#projects h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 60px 0 40px 0;
+  letter-spacing: -0.03em;
+  background: linear-gradient(to right, #a4bad8, #1f2937);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-/* Grille ultra-responsive */
+
 .projects-grid {
   display: grid;
-  /* auto-fit calcule automatiquement le nombre de colonnes selon l'écran */
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 24px;
   max-width: 1200px;
   margin: 40px auto;
 }
 
-/* Structure de la Carte */
 .project-card {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 16px; /* Beaux angles arrondis */
+  border-radius: 16px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -122,10 +237,9 @@ nav a:hover::after {
 }
 
 .project-card:hover {
-  border-color: #3b82f6; /* Légère lueur au survol */
+  border-color: #3b82f6;
 }
 
-/* Zone Image */
 .project-img-wrapper {
   width: 100%;
   height: 240px;
@@ -138,7 +252,6 @@ nav a:hover::after {
   object-fit: cover;
 }
 
-/* Contenu textuel */
 .project-info {
   padding: 24px;
   display: flex;
@@ -150,6 +263,7 @@ nav a:hover::after {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0 0 16px 0;
+  color: var(--text-main);
 }
 
 .project-desc {
@@ -159,10 +273,9 @@ nav a:hover::after {
   margin: 0 0 20px 0;
 }
 
-/* Zone des Pastilles / Badges */
 .project-badges {
   display: flex;
-  flex-wrap: wrap; /* Permet aux badges de passer à la ligne si besoin */
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 24px;
 }
@@ -172,14 +285,13 @@ nav a:hover::after {
   border: 1px solid var(--badge-border);
   color: var(--badge-text);
   padding: 6px 14px;
-  border-radius: 20px; /* Forme pilule */
+  border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
 }
 
-/* Liens en bas de carte */
 .project-links {
-  margin-top: auto; /* Pousse les liens tout en bas de la carte */
+  margin-top: auto;
   display: flex;
   gap: 20px;
 }
@@ -191,7 +303,7 @@ nav a:hover::after {
   font-weight: 500;
   display: flex;
   align-items: center;
-  gap: 8px; /* Espace entre l'icône SVG et le texte */
+  gap: 8px;
   transition: color 0.2s ease;
 }
 
@@ -204,11 +316,9 @@ nav a:hover::after {
 }
 
 .project-link:hover .icon {
-  transform: translateY(-2px); /* Petit effet d'animation sympa au survol */
+  transform: translateY(-2px);
 }
-/* --- LE RESTE DE TON CONFIGURATION RESTE INCHANGÉ, AJOUTE ÇA EN BAS --- */
 
-/* Alignement du bouton dans la carte */
 .project-footer {
   margin-top: auto;
   display: flex;
@@ -238,16 +348,18 @@ nav a:hover::after {
   transform: scale(0.96);
 }
 
-/* --- LE CONTENEUR DE LA MODALE --- */
+/* =====================================================================
+   MODALE PROJET
+   ===================================================================== */
 .modal {
-  display: none; /* Caché par défaut */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(11, 15, 25, 0.8); /* Fond transparent sombre */
-  backdrop-filter: blur(8px); /* Effet de flou de l'arrière-plan */
+  background-color: rgba(11, 15, 25, 0.8);
+  backdrop-filter: blur(8px);
   z-index: 1000;
   justify-content: center;
   align-items: center;
@@ -255,26 +367,24 @@ nav a:hover::after {
   box-sizing: border-box;
 }
 
-/* La boîte de dialogue au centre */
 .modal-content {
-  background-color: #111827;
-  border: 1px solid #1f2937;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
   border-radius: 20px;
   max-width: 800px;
   width: 100%;
   max-height: 85vh;
-  overflow-y: auto; /* Permet de scroller si le texte/les images dépassent */
+  overflow-y: auto;
   padding: 40px;
   position: relative;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* La croix de fermeture */
 .close-modal {
   position: absolute;
   top: 20px;
   right: 25px;
-  color: #9ca3af;
+  color: var(--text-muted);
   font-size: 32px;
   font-weight: bold;
   cursor: pointer;
@@ -282,23 +392,22 @@ nav a:hover::after {
 }
 
 .close-modal:hover {
-  color: #ef4444; /* Devient rouge au survol */
+  color: #ef4444;
 }
 
 .modal-content h2 {
   font-size: 2rem;
   margin-top: 0;
-  color: #ffffff;
+  color: var(--text-main);
 }
 
 .modal-content p {
-  color: #9ca3af;
+  color: var(--text-muted);
   line-height: 1.6;
   font-size: 1.05rem;
   margin-bottom: 30px;
 }
 
-/* Grille de la galerie d'images dans la modale */
 .modal-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -311,23 +420,27 @@ nav a:hover::after {
   height: 180px;
   object-fit: cover;
   border-radius: 10px;
-  border: 1px solid #334155;
+  border: 1px solid var(--card-border);
   transition: transform 0.2s;
+  cursor: zoom-in;
 }
 
 .modal-gallery-img:hover {
   transform: scale(1.02);
 }
-/* --- SYSTEME LIGHTBOX (IMAGE EN GRAND) --- */
+
+/* =====================================================================
+   LIGHTBOX
+   ===================================================================== */
 .lightbox {
-  display: none; /* Caché par défaut */
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(5, 8, 15, 0.95); /* Fond noir presque total */
-  z-index: 2000; /* Passe par-dessus la première modale */
+  background-color: rgba(5, 8, 15, 0.95);
+  z-index: 2000;
   justify-content: center;
   align-items: center;
   animation: fadeIn 0.2s ease;
@@ -336,13 +449,12 @@ nav a:hover::after {
 #lightbox-img {
   max-width: 90%;
   max-height: 85vh;
-  object-fit: contain; /* Évite toute déformation de l'image */
+  object-fit: contain;
   border-radius: 12px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
   border: 1px solid #334155;
 }
 
-/* Bouton de fermeture de la Lightbox */
 .close-lightbox {
   position: absolute;
   top: 30px;
@@ -361,12 +473,6 @@ nav a:hover::after {
   transform: scale(1.1);
 }
 
-/* Curseur en forme de loupe sur les images de la galerie */
-.modal-gallery-img {
-  cursor: zoom-in;
-}
-
-/* Petite animation d'apparition fluide */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -376,9 +482,11 @@ nav a:hover::after {
   }
 }
 
-/* --- SECTION CONTACT --- */
+/* =====================================================================
+   SECTION CONTACT
+   ===================================================================== */
 #contact {
-  max-width: 600px; /* Formulaire centré et pas trop large */
+  max-width: 600px;
   margin: 100px auto 60px auto;
   padding: 0 20px;
 }
@@ -389,6 +497,7 @@ nav a:hover::after {
   margin-bottom: 8px;
   text-align: center;
   letter-spacing: -0.05em;
+  color: var(--text-main);
 }
 
 .contact-subtitle {
@@ -415,22 +524,26 @@ nav a:hover::after {
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 8px;
-  color: #e5e7eb;
+  color: var(--label-color);
 }
 
-/* Inputs et Textarea stylisés style Figma */
 .form-group input,
 .form-group textarea {
-  background-color: #0b0f19;
-  border: 1px solid var(--card-border);
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
   border-radius: 8px;
   padding: 12px 16px;
-  color: #ffffff;
+  color: var(--text-color);
   font-family: inherit;
   font-size: 0.95rem;
   transition:
     border-color 0.2s,
     box-shadow 0.2s;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
 }
 
 .form-group input:focus,
@@ -440,7 +553,6 @@ nav a:hover::after {
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
 }
 
-/* Bouton d'envoi large */
 #btn-submit {
   width: 100%;
   background-color: #38bdf8;
@@ -465,7 +577,6 @@ nav a:hover::after {
   cursor: not-allowed;
 }
 
-/* Messages de retour d'état */
 .form-response {
   margin-top: 20px;
   text-align: center;
@@ -475,12 +586,14 @@ nav a:hover::after {
 
 .form-response.success {
   color: #10b981;
-} /* Vert */
+}
 .form-response.error {
   color: #ef4444;
-} /* Rouge */
+}
 
-/* =============================== VUE APPLICATION ADMIN =================================*/
+/* =====================================================================
+   VUE ADMIN
+   ===================================================================== */
 .admin-body {
   display: flex;
   min-height: 100vh;
@@ -489,7 +602,6 @@ nav a:hover::after {
   font-family: "Inter", sans-serif;
 }
 
-/* Barre latérale gauche */
 .admin-sidebar {
   width: 260px;
   background-color: #111827;
@@ -538,7 +650,6 @@ nav a:hover::after {
   color: #e5e7eb;
 }
 
-/* Zone de contenu principale */
 .admin-content {
   flex-grow: 1;
   padding: 40px;
@@ -547,11 +658,11 @@ nav a:hover::after {
 }
 
 .admin-section {
-  display: none; /* Masqué par défaut */
+  display: none;
 }
 
 .admin-section.active {
-  display: block; /* Affiché quand actif */
+  display: block;
 }
 
 .admin-content h2 {
@@ -560,7 +671,6 @@ nav a:hover::after {
   margin-bottom: 30px;
 }
 
-/* Formulaire Admin */
 .admin-form {
   background-color: #111827;
   border: 1px solid #1f2937;
@@ -571,11 +681,66 @@ nav a:hover::after {
 
 .form-row {
   display: flex;
+  flex-direction: column;
   gap: 20px;
+  margin-bottom: 20px;
 }
 
-.form-row .form-group {
-  flex: 1;
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group textarea,
+.form-group input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.helper-text {
+  color: var(--text-muted);
+  margin-top: 5px;
+  font-size: 0.8rem;
+}
+
+.info-helper {
+  color: #38bdf8;
+  margin-top: 5px;
+  font-size: 0.8rem;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.btn-submit {
+  background: #38bdf8;
+  color: #0b0f19;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-submit:hover {
+  background: #0ea5e9;
+}
+
+.btn-cancel {
+  background: #4b5563;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .btn-admin-submit {
@@ -593,7 +758,6 @@ nav a:hover::after {
   background-color: #0ea5e9;
 }
 
-/* Cartes des messages reçus */
 .message-admin-card {
   background-color: #111827;
   border: 1px solid #1f2937;
@@ -625,7 +789,6 @@ nav a:hover::after {
   line-height: 1.5;
 }
 
-/* Design du Calendrier */
 .calendar-placeholder {
   background-color: #111827;
   border: 2px dashed #1f2937;
@@ -639,10 +802,10 @@ nav a:hover::after {
   color: #9ca3af;
 }
 
-/* --- Structure globale du manager --- */
+/* --- Project manager --- */
 .project-manager-container {
   display: flex;
-  flex-direction: column; /* Par défaut sur mobile : tout l'un sous l'autre */
+  flex-direction: column;
   gap: 30px;
   margin-top: 20px;
 }
@@ -660,85 +823,6 @@ nav a:hover::after {
   color: #ffffff;
 }
 
-/* --- Alignement des lignes du formulaire --- */
-.form-row {
-  display: flex;
-  flex-direction: column; /* Empilé par défaut */
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  margin-bottom: 8px;
-  color: #9ca3af;
-  font-size: 0.9rem;
-}
-
-.form-group input[type="text"],
-.form-group input[type="url"],
-.form-group textarea,
-.form-group input[type="file"] {
-  width: 100%;
-  padding: 12px;
-  background: #1f2937;
-  border: 1px solid #374151;
-  border-radius: 8px;
-  color: #fff;
-  font-family: inherit;
-  box-sizing: border-box;
-}
-
-.helper-text {
-  color: #6b7280;
-  margin-top: 5px;
-  font-size: 0.8rem;
-}
-
-.info-helper {
-  color: #38bdf8;
-  margin-top: 5px;
-  font-size: 0.8rem;
-}
-
-/* --- Boutons --- */
-.form-actions {
-  display: flex;
-  flex-wrap: wrap; /* Permet aux boutons de revenir à la ligne si l'écran est minuscule */
-  gap: 15px;
-}
-
-.btn-submit {
-  background: #38bdf8;
-  color: #0b0f19;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-submit:hover {
-  background: #0ea5e9;
-}
-
-.btn-cancel {
-  background: #4b5563;
-  color: #ffffff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* --- Barre latérale de droite (Liste des projets) --- */
 .admin-projects-sidebar {
   background: #111827;
   border: 1px solid #1f2937;
@@ -754,57 +838,23 @@ nav a:hover::after {
   font-size: 1.2rem;
 }
 
-/* =========================================================================
-   MEDIA QUERIES : Changement d'affichage sur les tablettes et ordinateurs
-   ========================================================================= */
-@media (min-width: 768px) {
-  /* Le formulaire passe en 2 colonnes côte à côte pour les liens et technos */
-  .form-row {
-    flex-direction: row;
-  }
-
-  /* Le formulaire global et la barre latérale se mettent côte à côte */
-  .project-manager-container {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-
-  .form-container-box {
-    flex: 2; /* Prend plus de place */
-  }
-
-  .admin-projects-sidebar {
-    flex: 1; /* Prend moins de place */
-    position: sticky; /* Reste visible au scroll sur ordi */
-    top: 20px;
-  }
-}
-
-/* --- Stylisation de la zone d'upload globale --- */
+/* --- Input file --- */
 .form-group input[type="file"] {
-  padding: 8px; /* Réduit un peu le padding pour équilibrer avec le bouton */
-  background: #1f2937;
-  border: 1px solid #374151;
-  border-radius: 8px;
-  color: #9ca3af; /* Couleur du texte du fichier sélectionné */
+  padding: 8px;
+  color: var(--text-muted);
   cursor: pointer;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
 }
 
-/* Au survol de la zone globale */
 .form-group input[type="file"]:hover {
-  border-color: #4b5563;
+  border-color: var(--text-muted);
 }
 
-/* --- Stylisation du BOUTON à l'intérieur de l'input file --- */
 .form-group input[type="file"]::file-selector-button {
-  background: #374151; /* Fond gris moyen */
-  color: #ffffff; /* Texte blanc */
+  background: var(--file-btn-bg);
+  color: var(--text-main);
   border: none;
   padding: 8px 16px;
-  margin-right: 15px; /* Espace entre le bouton et le nom du fichier */
+  margin-right: 15px;
   border-radius: 6px;
   font-weight: 600;
   font-size: 0.85rem;
@@ -814,17 +864,39 @@ nav a:hover::after {
     transform 0.1s;
 }
 
-/* Au survol du bouton spécifiquement */
 .form-group input[type="file"]::file-selector-button:hover {
-  background: #4b5563; /* S'éclaircit au survol */
+  background: var(--file-btn-hover);
 }
 
-/* Petit effet de clic dynamique */
 .form-group input[type="file"]::file-selector-button:active {
   transform: scale(0.98);
 }
-/* =============================== FIN DE LA VUE ADMIN ================================== */
-/* --- COMPLÉMENT STYLE LOGIN --- */
+
+/* --- Media queries admin --- */
+@media (min-width: 768px) {
+  .form-row {
+    flex-direction: row;
+  }
+
+  .project-manager-container {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .form-container-box {
+    flex: 2;
+  }
+
+  .admin-projects-sidebar {
+    flex: 1;
+    position: sticky;
+    top: 20px;
+  }
+}
+
+/* =====================================================================
+   VUE LOGIN
+   ===================================================================== */
 .login-body {
   display: flex;
   justify-content: center;
@@ -854,7 +926,6 @@ nav a:hover::after {
   font-weight: 700;
 }
 
-/* Structure pour aligner l'input et le bouton œil sur la même ligne */
 .password-wrapper {
   position: relative;
   display: flex;
@@ -863,11 +934,10 @@ nav a:hover::after {
 
 .password-wrapper input {
   width: 100%;
-  padding-right: 45px; /* Laisse de la place pour l'œil à droite */
+  padding-right: 45px;
   box-sizing: border-box;
 }
 
-/* Le bouton œil transparent */
 .toggle-password-btn {
   position: absolute;
   right: 12px;
@@ -884,7 +954,6 @@ nav a:hover::after {
   color: #38bdf8;
 }
 
-/* LE BOUTON CONNECTER STYLISÉ */
 #btn-login {
   width: 100%;
   background-color: #38bdf8;
@@ -921,4 +990,3 @@ nav a:hover::after {
   font-size: 0.9rem;
   font-weight: 500;
 }
-/* =============================== FIN LOGIN =============================== */
