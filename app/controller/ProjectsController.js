@@ -36,10 +36,20 @@ exports.createProject = async (req, res) => {
       languages,
     } = req.body;
 
+    console.log("📝 Création projet - Body:", req.body);
+    console.log("📸 Fichiers reçus:", req.files ? req.files.length : 0);
+
     if (!req.files || req.files.length === 0) {
       return res
         .status(400)
         .json({ message: "Au moins une image est obligatoire." });
+    }
+
+    // Validation des champs obligatoires
+    if (!Title || !Description) {
+      return res
+        .status(400)
+        .json({ message: "Le titre et la description sont obligatoires." });
     }
 
     await connection.beginTransaction();
@@ -50,8 +60,9 @@ exports.createProject = async (req, res) => {
         "SELECT IdType FROM types WHERE Name = ?",
         [TypeName.trim()],
       );
-      if (rows.length > 0) finalTypeId = rows[0].IdType;
-      else {
+      if (rows.length > 0) {
+        finalTypeId = rows[0].IdType;
+      } else {
         const [result] = await connection.query(
           "INSERT INTO types (Name) VALUES (?)",
           [TypeName.trim()],
@@ -60,7 +71,7 @@ exports.createProject = async (req, res) => {
       }
     }
 
-    const [project] = await connection.query(
+    const [projectResult] = await connection.query(
       "INSERT INTO projects (Title, Description, Github_Link, Github_Link_2, IdType) VALUES (?, ?, ?, ?, ?)",
       [
         Title,
@@ -70,47 +81,65 @@ exports.createProject = async (req, res) => {
         finalTypeId,
       ],
     );
-    const newProjectId = project.insertId;
+    const newProjectId = projectResult.insertId;
+    console.log("✅ Projet inséré avec ID:", newProjectId);
 
     for (let i = 0; i < req.files.length; i++) {
+      const filename = req.files[i].filename;
+      const filepath = req.files[i].path;
+      console.log(`📸 Fichier ${i + 1}: ${filename}`);
+      console.log(`   Chemin physique: ${filepath}`);
+
       await connection.query(
         "INSERT INTO project_images (ImageUrl, IsMain, IdProject) VALUES (?, ?, ?)",
-        [`images/${req.files[i].filename}`, i === 0 ? 1 : 0, newProjectId],
+        [`${filename}`, i === 0 ? 1 : 0, newProjectId],
       );
     }
+    console.log("✅ Images insérées en DB:", req.files.length);
 
-    if (languages) {
+    if (languages && languages.trim() !== "") {
       const langNames = languages
         .split(",")
         .map((l) => l.trim())
         .filter((l) => l !== "");
+
       for (const name of langNames) {
-        let [rows] = await connection.query(
-          "SELECT IdLanguage FROM languages WHERE Name = ?",
+        const [rows] = await connection.query(
+          "SELECT IdLanguage FROM language WHERE Name = ?",
           [name],
         );
-        let langId =
-          rows.length > 0
-            ? rows[0].IdLanguage
-            : (
-                await connection.query(
-                  "INSERT INTO languages (Name) VALUES (?)",
-                  [name],
-                )
-              )[0].insertId;
+
+        let langId;
+        if (rows.length > 0) {
+          langId = rows[0].IdLanguage;
+        } else {
+          const [insertResult] = await connection.query(
+            "INSERT INTO language (Name) VALUES (?)",
+            [name],
+          );
+          langId = insertResult.insertId;
+        }
+
         await connection.query(
           "INSERT INTO project_language (IdProject, IdLanguage) VALUES (?, ?)",
           [newProjectId, langId],
         );
       }
+      console.log("✅ Langages insérés:", langNames.length);
     }
 
     await connection.commit();
+    console.log("✅ Transaction validée pour le projet ID:", newProjectId);
     res
       .status(201)
       .json({ message: "Projet créé avec succès !", projectId: newProjectId });
   } catch (error) {
-    await connection.rollback();
+    console.error("❌ Erreur création projet:", error);
+    try {
+      await connection.rollback();
+    } catch (rollbackError) {
+      console.error("❌ Erreur lors du rollback:", rollbackError);
+    }
     res
       .status(500)
       .json({ message: "Erreur lors de la création", error: error.message });
@@ -186,7 +215,7 @@ exports.updateProject = async (req, res) => {
         [id],
       );
       for (const img of oldImages) {
-        const filePath = path.join(__dirname, "../../public", img.ImageUrl);
+        const filePath = path.join(__dirname, "../public/images", img.ImageUrl);
         if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
       }
 
@@ -196,7 +225,7 @@ exports.updateProject = async (req, res) => {
       for (let i = 0; i < req.files.length; i++) {
         await connection.query(
           "INSERT INTO project_images (ImageUrl, IsMain, IdProject) VALUES (?, ?, ?)",
-          [`images/${req.files[i].filename}`, i === 0 ? 1 : 0, id],
+          [`${req.files[i].filename}`, i === 0 ? 1 : 0, id],
         );
       }
     }

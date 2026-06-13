@@ -15,7 +15,7 @@ app.use("/api/types", typeRoutes);
 app.use("/api/languages", languageRoutes);
 app.use("/api/auth", authRoutes); // Route pour l'authentification
 
-app.use("/images", express.static(path.join(__dirname, "public/images")));
+app.use("/images", express.static(path.join(__dirname, "./app/public/images"))); // Sert les images depuis le dossier public/images
 
 app.use("/api/messages", require("./app/routes/MessageRoutes"));
 app.listen(3000, () =>
