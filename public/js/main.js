@@ -22,45 +22,42 @@ async function loadProjects() {
       const projectCard = document.createElement("div");
       projectCard.classList.add("project-card");
 
-      // Image principale
-      let mainImage = project.images.find((img) => img.IsMain === 1);
-      if (!mainImage && project.images.length > 0)
-        mainImage = project.images[0];
+      // Gestion des noms de colonnes (au cas où c'est en majuscule : Id, Title, etc.)
+      const title = project.title || project.Title || "Titre inconnu";
+      const desc =
+        project.description || project.Description || "Pas de description";
+      const id = project.id || project.IdProject;
+      const images = project.images || [];
+
+      // Image principale avec préfixe /images/
+      let mainImage = images.find((img) => img.IsMain === 1) || images[0];
       const imagePath = mainImage
-        ? mainImage.ImageUrl
+        ? `http://localhost:3000/images/${mainImage.ImageUrl}`
         : "images/placeholder.png";
 
       // Badges langages
       let languagesHTML = "";
       const languagesArray = project.languages || project.Languages || [];
-      if (languagesArray.length > 0) {
-        languagesArray.forEach((lang) => {
-          languagesHTML += `<span class="lang-badge">${lang.Name || lang.name}</span>`;
-        });
-      }
+      languagesArray.forEach((lang) => {
+        languagesHTML += `<span class="lang-badge">${lang.Name || lang.name}</span>`;
+      });
 
       // Liens GitHub
       let linksHTML = "";
-      if (project.githubLink) {
-        linksHTML += `<a href="${project.githubLink}" target="_blank" class="project-link">Code ${project.githubLink2 ? "API" : ""}</a>`;
-      }
-      if (project.githubLink2) {
-        linksHTML += `<a href="${project.githubLink2}" target="_blank" class="project-link">Code Front</a>`;
+      if (project.githubLink || project.Github_Link) {
+        linksHTML += `<a href="${project.githubLink || project.Github_Link}" target="_blank" class="project-link">Code</a>`;
       }
 
-      // Construction de la carte avec le NOUVEAU BOUTON (note l'attribut data-id)
       projectCard.innerHTML = `
         <div class="project-img-wrapper">
-          <img src="${imagePath}" alt="${project.title}" class="project-img">
+          <img src="${imagePath}" alt="${title}" class="project-img">
         </div>
         <div class="project-info">
-          <h3 class="project-title">${project.title || "Titre inconnu"}</h3>
-          <p class="project-desc">${project.description || "Pas de description"}</p>
-          
+          <h3 class="project-title">${title}</h3>
+          <p class="project-desc">${desc}</p>
           <div class="project-badges">${languagesHTML}</div>
-          
           <div class="project-footer">
-            <button class="btn-details" data-id="${project.id}">En savoir plus</button>
+            <button class="btn-details" data-id="${id}">En savoir plus</button>
             <div class="project-links">${linksHTML}</div>
           </div>
         </div>
@@ -69,7 +66,6 @@ async function loadProjects() {
       container.appendChild(projectCard);
     });
 
-    // Une fois les cartes créées, on active les clics sur les boutons de détails
     setupModalEvents();
   } catch (error) {
     console.error(error);
@@ -77,73 +73,63 @@ async function loadProjects() {
   }
 }
 
-// Fonction pour gérer l'ouverture et la fermeture de la modale
 function setupModalEvents() {
   const modal = document.getElementById("project-modal");
   const closeModalBtn = document.querySelector(".close-modal");
-  const detailButtons = document.querySelectorAll(".btn-details");
-
-  // Variables pour la Lightbox (Plein écran)
   const lightbox = document.getElementById("lightbox");
   const lightboxImg = document.getElementById("lightbox-img");
   const closeLightboxBtn = document.querySelector(".close-lightbox");
 
-  // Ouverture de la modale Projet
-  detailButtons.forEach((button) => {
+  document.querySelectorAll(".btn-details").forEach((button) => {
     button.addEventListener("click", (e) => {
       const projectId = parseInt(e.target.getAttribute("data-id"));
-      const project = allProjects.find((p) => p.id === projectId);
+      const project = allProjects.find(
+        (p) => (p.id || p.IdProject) === projectId,
+      );
 
       if (project) {
-        document.getElementById("modal-title").innerText = project.title;
-        document.getElementById("modal-desc").innerText = project.description;
+        document.getElementById("modal-title").innerText =
+          project.title || project.Title;
+        document.getElementById("modal-desc").innerText =
+          project.description || project.Description;
 
         const galleryContainer = document.getElementById("modal-gallery");
         galleryContainer.innerHTML = "";
 
-        if (project.images && project.images.length > 0) {
-          project.images.forEach((img) => {
+        const images = project.images || [];
+        if (images.length > 0) {
+          images.forEach((img) => {
             const imgElement = document.createElement("img");
-            imgElement.src = img.ImageUrl;
-            imgElement.alt = project.title;
+            // CORRECTION : Ajout du préfixe /images/ ici aussi
+            imgElement.src = `http://localhost:3000/images/${img.ImageUrl}`;
+            imgElement.alt = "Projet";
             imgElement.classList.add("modal-gallery-img");
 
-            // ⚡ NOUVEAU : Quand on clique sur cette image, elle s'ouvre en grand
             imgElement.addEventListener("click", () => {
-              lightboxImg.src = img.ImageUrl;
+              lightboxImg.src = imgElement.src;
               lightbox.style.display = "flex";
             });
 
             galleryContainer.appendChild(imgElement);
           });
-        } else {
-          galleryContainer.innerHTML =
-            "<p>Aucune image disponible pour ce projet.</p>";
         }
-
         modal.style.display = "flex";
       }
     });
   });
 
-  // Fermeture de la modale Projet
-  closeModalBtn.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
+  closeModalBtn?.addEventListener(
+    "click",
+    () => (modal.style.display = "none"),
+  );
+  closeLightboxBtn?.addEventListener(
+    "click",
+    () => (lightbox.style.display = "none"),
+  );
 
-  // ⚡ NOUVEAU : Fermeture de la Lightbox (Plein écran)
-  closeLightboxBtn.addEventListener("click", () => {
-    lightbox.style.display = "none";
-  });
-
-  // Fermeture au clic à l'extérieur
   window.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.style.display = "none";
-    }
-    if (e.target === lightbox) {
-      lightbox.style.display = "none";
-    }
+    if (e.target === modal) modal.style.display = "none";
+    if (e.target === lightbox) lightbox.style.display = "none";
   });
 }
 

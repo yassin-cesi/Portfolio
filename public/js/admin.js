@@ -12,8 +12,8 @@ if (!token) {
 let localProjectsArray = [];
 
 // 1. Gestion du changement d'onglets (Tabs)
-function switchTab(tabId) {
-  // Désactiver tous les onglets et liens
+function switchTab(tabId, event) {
+  // Ajoute 'event' ici
   document
     .querySelectorAll(".admin-section")
     .forEach((sec) => sec.classList.remove("active"));
@@ -21,20 +21,15 @@ function switchTab(tabId) {
     .querySelectorAll(".admin-nav a")
     .forEach((link) => link.classList.remove("active"));
 
-  // Activer l'onglet cible
   document.getElementById(`tab-${tabId}`).classList.add("active");
 
-  // Sécurité pour cibler le lien cliqué sans utiliser le mot-clé global 'event'
-  if (window.event && window.event.currentTarget) {
-    window.event.currentTarget.classList.add("active");
+  // Utilise l'événement reçu en paramètre
+  if (event && event.currentTarget) {
+    event.currentTarget.classList.add("active");
   }
 
-  // Chargement intelligent des données selon l'onglet cliqué
-  if (tabId === "messages") {
-    fetchMessages();
-  } else if (tabId === "add-project") {
-    fetchAdminProjects(); // Charge la liste de droite pour pouvoir modifier
-  }
+  if (tabId === "messages") fetchMessages();
+  else if (tabId === "add-project") fetchAdminProjects();
 }
 
 // 2. Récupérer et afficher les messages de la BDD
@@ -281,9 +276,11 @@ document
         fetchAdminProjects(); // On rafraîchit la liste de droite
       } else {
         // Affiche le message d'erreur précis renvoyé par le serveur
-        responseText.innerText = `❌ Erreur ${response.status} : ${result.message || result.error || "Action impossible"}`;
+        const errorMsg = result.message || result.error || "Action impossible";
+        responseText.innerText = `❌ Erreur ${response.status} : ${errorMsg}`;
         responseText.style.color = "#ef4444";
         console.error("Détail erreur serveur :", result);
+        console.log("Réponse complète du serveur :", rawText);
       }
     } catch (error) {
       console.error("Erreur envoi formulaire admin:", error);
@@ -335,4 +332,5 @@ window.deleteProjectAction = async function (projectId, projectTitle) {
 // Chargement initial au démarrage
 document.addEventListener("DOMContentLoaded", () => {
   fetchMessages();
+  fetchAdminProjects();
 });
