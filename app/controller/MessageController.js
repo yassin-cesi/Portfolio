@@ -10,12 +10,15 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, // STARTTLS au lieu de SSL direct
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  family: 4, // force IPv4, évite le problème ENETUNREACH en IPv6
+  family: 4,
+  connectionTimeout: 3000,
+  greetingTimeout: 3000,
+  socketTimeout: 3000,
 });
 
 // Envoi d'un message (Public)
