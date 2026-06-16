@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (token) {
           localStorage.setItem("adminToken", token);
-          window.location.href = "admin.html";
+          window.location.href = "../admin/authorized/admin.html";
         } else {
           console.error(
             "Le serveur a validé la connexion mais n'a renvoyé aucun token. Vérifie la clé dans ton controlleur login.",

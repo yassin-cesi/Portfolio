@@ -5,7 +5,7 @@ const token = localStorage.getItem("adminToken");
 
 // Si pas de token, redirection immédiate vers le login
 if (!token) {
-  window.location.href = "login.html";
+  window.location.href = "../admin/authentification/login.html";
 }
 
 // Variable globale pour stocker la liste locale des projets reçus du serveur
