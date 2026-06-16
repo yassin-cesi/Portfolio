@@ -1,6 +1,10 @@
+const dns = require("dns");
+dns.setDefaultResultOrder("ipv4first");
+
 require("dotenv").config(); // Important : charge les variables d'environnement
 const Message = require("../models/Message");
 const nodemailer = require("nodemailer");
+
 
 // Configuration du transporteur
 const transporter = nodemailer.createTransport({
