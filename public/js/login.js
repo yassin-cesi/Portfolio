@@ -31,8 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       console.log("Tentative de connexion pour :", email);
-
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch("https://portfolio-production-aa49.up.railway.app/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -45,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         // Si ton Back-End renvoie le token sous une autre clé (ex: data.token ou data.accessToken)
         const token = data.token || data.accessToken;
-
         if (token) {
           localStorage.setItem("adminToken", token);
           window.location.href = "../admin/authorized/admin.html";
