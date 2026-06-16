@@ -1,33 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `portfolio` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `portfolio`;
--- MySQL dump 10.13  Distrib 8.0.45, for Win64 (x86_64)
---
--- Host: 127.0.0.1    Database: portfolio
--- ------------------------------------------------------
--- Server version	9.6.0
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
-SET @@SESSION.SQL_LOG_BIN= 0;
-
---
--- GTID state at the beginning of the backup 
---
-
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '13ce66f5-269f-11f1-9c6a-345a60839332:1-2246';
-
---
--- Table structure for table `addresses`
---
 
 DROP TABLE IF EXISTS `addresses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -98,12 +68,36 @@ CREATE TABLE `messages` (
 --
 -- Dumping data for table `messages`
 --
+--
+-- Table structure for table `projects`
+--
 
-LOCK TABLES `messages` WRITE;
-/*!40000 ALTER TABLE `messages` DISABLE KEYS */;
-INSERT INTO `messages` VALUES (1,'WineShop','owhter.gaming@gmail.com','Wineshop Stage','BONJOUR, ceci est un test d\'email','2026-06-12 12:11:42'),(2,'Yassin Riahi','yassin.riahi2007@gmail.com','test','test','2026-06-13 05:45:01'),(3,'TEST','owhter.gaming@gmail.com','test','teste','2026-06-13 07:48:43'),(4,'Yassin Riahi','yassin.riahi2007@gmail.com','test','test','2026-06-13 07:50:29'),(5,'Yassin Riahi','yassin.riahi2007@gmail.com','test','test','2026-06-13 07:54:28'),(6,'test','yassin.riahi2007@gmail.com','','test','2026-06-13 08:28:47'),(7,'test','waazzux.officiel@gmail.com','ttest stage','teeeeste','2026-06-13 08:33:58'),(8,'TEEEESTE','owhter.gaming@gmail.com','TEEEEEEEEEEEEEEEEETSTEEE','TEEEEEEEEEEEEEEEESTE','2026-06-13 09:41:32'),(9,'test','owhter.gaming@gmail.com','trdt','test','2026-06-14 18:17:46'),(10,'riahi','anisriahi202@gmail.com','test','sale merde','2026-06-14 18:25:47');
-/*!40000 ALTER TABLE `messages` ENABLE KEYS */;
+DROP TABLE IF EXISTS `projects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `projects` (
+  `IdProject` int NOT NULL AUTO_INCREMENT,
+  `Title` varchar(100) NOT NULL,
+  `Description` text,
+  `Github_Link` varchar(255) DEFAULT NULL,
+  `IdType` int DEFAULT NULL,
+  `Github_Link_2` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`IdProject`),
+  KEY `IdType` (`IdType`),
+  CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`IdType`) REFERENCES `types` (`IdType`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `projects`
+--
+
+LOCK TABLES `projects` WRITE;
+/*!40000 ALTER TABLE `projects` DISABLE KEYS */;
+INSERT INTO `projects` VALUES (30,'Portfolio','test','https://github.com/yassin-cesi/Portfolio',6,NULL),(31,'WineShop APP','Dans le cadre d\'un projet de développement d\'un application lourde en cours, nous devions créer une application pour un caviste lui permettant de pouvoir gérer ces stock de vin, les ventes...','https://github.com/yassin-cesi/Projet_API.git',2,'https://github.com/daydeemile-arch/WineApi-Front.git'),(32,'test','test','https://github.com/yassin-cesi/Portfolio',6,NULL);
+/*!40000 ALTER TABLE `projects` ENABLE KEYS */;
 UNLOCK TABLES;
+
 
 --
 -- Table structure for table `project_images`
@@ -160,35 +154,6 @@ INSERT INTO `project_language` VALUES (31,1),(30,2),(31,2),(30,3),(30,4),(30,5),
 /*!40000 ALTER TABLE `project_language` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `projects`
---
-
-DROP TABLE IF EXISTS `projects`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `projects` (
-  `IdProject` int NOT NULL AUTO_INCREMENT,
-  `Title` varchar(100) NOT NULL,
-  `Description` text,
-  `Github_Link` varchar(255) DEFAULT NULL,
-  `IdType` int DEFAULT NULL,
-  `Github_Link_2` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`IdProject`),
-  KEY `IdType` (`IdType`),
-  CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`IdType`) REFERENCES `types` (`IdType`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `projects`
---
-
-LOCK TABLES `projects` WRITE;
-/*!40000 ALTER TABLE `projects` DISABLE KEYS */;
-INSERT INTO `projects` VALUES (30,'Portfolio','test','https://github.com/yassin-cesi/Portfolio',6,NULL),(31,'WineShop APP','Dans le cadre d\'un projet de développement d\'un application lourde en cours, nous devions créer une application pour un caviste lui permettant de pouvoir gérer ces stock de vin, les ventes...','https://github.com/yassin-cesi/Projet_API.git',2,'https://github.com/daydeemile-arch/WineApi-Front.git'),(32,'test','test','https://github.com/yassin-cesi/Portfolio',6,NULL);
-/*!40000 ALTER TABLE `projects` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `roles`
