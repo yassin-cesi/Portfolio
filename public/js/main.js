@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/projects";
+const API_URL = "https://portfolio-production-aa49.up.railway.app/api/projects";
 
 // Variable globale pour stocker les projets une fois chargés
 let allProjects = [];
@@ -31,7 +31,7 @@ async function loadProjects() {
 
       let mainImage = images.find((img) => img.IsMain === 1) || images[0];
       const imagePath = mainImage
-        ? `http://localhost:3000/images/${mainImage.ImageUrl}`
+        ? `https://portfolio-production-aa49.up.railway.app/images/${mainImage.ImageUrl}`
         : "images/placeholder.png";
 
       let languagesHTML = "";
@@ -100,7 +100,7 @@ function setupModalEvents() {
         const images = project.images || [];
         images.forEach((img) => {
           const imgElement = document.createElement("img");
-          imgElement.src = `http://localhost:3000/images/${img.ImageUrl}`;
+          imgElement.src = `https://portfolio-production-aa49.up.railway.app/images/${img.ImageUrl}`;
           imgElement.alt = "Projet";
           imgElement.classList.add("modal-gallery-img");
           imgElement.onclick = () => {
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       try {
-        const response = await fetch("http://localhost:3000/api/messages", {
+        const response = await fetch("https://portfolio-production-aa49.up.railway.app/api/messages", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData),
