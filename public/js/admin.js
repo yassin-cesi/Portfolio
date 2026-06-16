@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = "https://portfolio-production-aa49.up.railway.app/api";
 
 // 🔐 SÉCURITÉ : Récupérer le token du localStorage
 const token = localStorage.getItem("adminToken");
