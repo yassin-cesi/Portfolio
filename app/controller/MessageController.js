@@ -4,11 +4,14 @@ const nodemailer = require("nodemailer");
 
 // Configuration du transporteur
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // STARTTLS au lieu de SSL direct
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  family: 4, // force IPv4, évite le problème ENETUNREACH en IPv6
 });
 
 // Envoi d'un message (Public)
