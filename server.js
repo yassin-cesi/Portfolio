@@ -37,6 +37,6 @@ app.use("/images", express.static(path.join(__dirname, "./app/public/images")));
 
 app.use("/api/messages", require("./app/routes/MessageRoutes"));
 
-app.listen(process.env.PORT || 3000, () =>
-  console.log(`Serveur connecté sur le port ${process.env.PORT || 3000}`)
+app.listen(PORT, '0.0.0.0', () => 
+  console.log(`Serveur connecté sur le port ${PORT}`)
 );
