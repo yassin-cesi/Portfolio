@@ -3,9 +3,28 @@ const API_URL = "https://portfolio-production-aa49.up.railway.app/api/projects";
 // Variable globale pour stocker les projets une fois chargés
 let allProjects = [];
 
+// Construit les liens vers le code source avec un libellé clair plutôt que
+// "Github 1" / "Github 2". Quand les deux liens sont présents, on suppose le
+// schéma le plus courant (frontend / backend). S'il n'y en a qu'un, on reste
+// générique puisqu'on ne sait pas lequel des deux il représente.
+function buildGithubLinksHTML(link1, link2, linkClass) {
+  let html = "";
+  if (link1 && link2) {
+    html += `<a href="${link1}" target="_blank" class="${linkClass}">Frontend <span class="icon">↗</span></a>`;
+    html += `<a href="${link2}" target="_blank" class="${linkClass}">Backend <span class="icon">↗</span></a>`;
+  } else if (link1 || link2) {
+    const link = link1 || link2;
+    html += `<a href="${link}" target="_blank" class="${linkClass}">Code source <span class="icon">↗</span></a>`;
+  }
+  return html;
+}
+
 async function loadProjects() {
   const container = document.getElementById("projects-container");
   if (!container) return; // Sécurité
+
+  // Petit état de chargement pour éviter le "trou" vide pendant l'appel API
+  container.innerHTML = `<p class="loading-msg">Chargement des projets…</p>`;
 
   try {
     const response = await fetch(API_URL);
@@ -40,15 +59,10 @@ async function loadProjects() {
         languagesHTML += `<span class="lang-badge">${lang.Name || lang.name}</span>`;
       });
 
-      // CORRECTION : Gestion des 2 liens GitHub
-      let linksHTML = "";
+      // Liens vers le code source (frontend / backend, ou générique si un seul lien)
       const link1 = project.githubLink || project.Github_Link;
       const link2 = project.githubLink2 || project.Github_Link2;
-
-      if (link1)
-        linksHTML += `<a href="${link1}" target="_blank" class="project-link">Code 1</a>`;
-      if (link2)
-        linksHTML += `<a href="${link2}" target="_blank" class="project-link">Code 2</a>`;
+      const linksHTML = buildGithubLinksHTML(link1, link2, "project-link");
 
       projectCard.innerHTML = `
         <div class="project-img-wrapper">
@@ -89,22 +103,35 @@ function setupModalEvents() {
       );
 
       if (project) {
-        document.getElementById("modal-title").innerText =
-          project.title || project.Title;
+        const title = project.title || project.Title;
+
+        document.getElementById("modal-title").innerText = title;
         document.getElementById("modal-desc").innerText =
           project.description || project.Description;
+
+        const modalLinksContainer = document.getElementById("modal-links");
+        if (modalLinksContainer) {
+          const mLink1 = project.githubLink || project.Github_Link;
+          const mLink2 = project.githubLink2 || project.Github_Link2;
+          modalLinksContainer.innerHTML = buildGithubLinksHTML(
+            mLink1,
+            mLink2,
+            "modal-link-btn",
+          );
+        }
 
         const galleryContainer = document.getElementById("modal-gallery");
         galleryContainer.innerHTML = "";
 
         const images = project.images || [];
-        images.forEach((img) => {
+        images.forEach((img, index) => {
           const imgElement = document.createElement("img");
           imgElement.src = `https://portfolio-production-aa49.up.railway.app/images/${img.ImageUrl}`;
-          imgElement.alt = "Projet";
+          imgElement.alt = `${title} – image ${index + 1}`;
           imgElement.classList.add("modal-gallery-img");
           imgElement.onclick = () => {
             lightboxImg.src = imgElement.src;
+            lightboxImg.alt = imgElement.alt;
             lightbox.style.display = "flex";
           };
           galleryContainer.appendChild(imgElement);
@@ -126,6 +153,16 @@ function setupModalEvents() {
     if (e.target === modal) modal.style.display = "none";
     if (e.target === lightbox) lightbox.style.display = "none";
   });
+
+  // Fermeture au clavier (Échap) : pratique attendue pour toute fenêtre superposée
+  window.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (lightbox.style.display === "flex") {
+      lightbox.style.display = "none";
+    } else if (modal.style.display === "flex") {
+      modal.style.display = "none";
+    }
+  });
 }
 
 // --- GESTION THÈME ET CONTACT (Initialisation unique) ---
@@ -135,8 +172,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Gestion Thème
   const themeToggle = document.getElementById("theme-toggle");
 
-  // Appliquer au chargement
-  if (localStorage.getItem("theme") === "light") {
+  // Appliquer au chargement : préférence sauvegardée, sinon préférence système
+  const savedTheme = localStorage.getItem("theme");
+  const prefersLight =
+    !savedTheme &&
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: light)").matches;
+
+  if (savedTheme === "light" || prefersLight) {
     document.body.classList.add("light-mode");
     themeToggle.checked = true;
   }
