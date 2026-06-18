@@ -93,14 +93,14 @@ router.get("/:id", projectsController.getProjectById);
 router.post(
   "/",
   auth,
-  handleUpload(upload.array("projectImages", 6)),
+  handleUpload(upload.array("projectImages", 12)),
   projectsController.createProject,
 );
 
 router.put(
   "/:id",
   auth,
-  handleUpload(upload.array("projectImages", 6)),
+  handleUpload(upload.array("projectImages", 12)),
   projectsController.updateProject,
 );
 
