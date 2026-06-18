@@ -10,20 +10,25 @@ const typeRoutes = require("./app/routes/TypeRoutes.js");
 const authRoutes = require("./app/routes/AuthRoutes.js");
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
   }),
 );
 
-
-app.use(cors({
-  origin: ["http://localhost:5500", "http://127.0.0.1:5500", "https://yassinriahi.fr"],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5500",
+      "http://127.0.0.1:5500",
+      "https://yassinriahi.fr",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 app.use(hpp());
 app.use(express.json());
@@ -39,6 +44,6 @@ app.use("/api/messages", require("./app/routes/MessageRoutes"));
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, '0.0.0.0', () => 
-  console.log(`Serveur connecté sur le port ${PORT}`)
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`Serveur connecté sur le port ${PORT}`),
 );

@@ -148,13 +148,49 @@ exports.createProject = async (req, res) => {
   }
 };
 
-// 4. SUPPRIMER UN PROJET (Ajouté car manquant)
+// 4. SUPPRIMER UN PROJET
 exports.deleteProject = async (req, res) => {
+  const connection = await db.getConnection();
   try {
-    await db.query("DELETE FROM projects WHERE IdProject = ?", [req.params.id]);
+    const { id } = req.params;
+    const fs = require("fs");
+    const path = require("path");
+
+    // Suppression des fichiers images physiques avant de toucher la BDD
+    const [images] = await connection.query(
+      "SELECT ImageUrl FROM project_images WHERE IdProject = ?",
+      [id],
+    );
+    for (const img of images) {
+      const filePath = path.join(__dirname, "../public/images", img.ImageUrl);
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    }
+
+    await connection.beginTransaction();
+
+    // Suppression des lignes liées avant le projet lui-même, pour éviter
+    // toute erreur de contrainte de clé étrangère si le ON DELETE CASCADE
+    // n'est pas configuré sur ces tables.
+    await connection.query("DELETE FROM project_images WHERE IdProject = ?", [
+      id,
+    ]);
+    await connection.query("DELETE FROM project_language WHERE IdProject = ?", [
+      id,
+    ]);
+    await connection.query("DELETE FROM projects WHERE IdProject = ?", [id]);
+
+    await connection.commit();
     res.status(200).json({ message: "Projet supprimé avec succès !" });
   } catch (error) {
+    console.error("❌ Erreur suppression projet :", error);
+    try {
+      await connection.rollback();
+    } catch (rollbackError) {
+      console.error("❌ Erreur lors du rollback:", rollbackError);
+    }
     res.status(500).json({ message: "Erreur lors de la suppression" });
+  } finally {
+    connection.release();
   }
 };
 
@@ -242,7 +278,7 @@ exports.updateProject = async (req, res) => {
         .filter((l) => l !== "");
       for (const name of langNames) {
         const [rows] = await connection.query(
-          "SELECT IdLanguage FROM languages WHERE Name = ?",
+          "SELECT IdLanguage FROM language WHERE Name = ?",
           [name],
         );
         const langId =
@@ -250,7 +286,7 @@ exports.updateProject = async (req, res) => {
             ? rows[0].IdLanguage
             : (
                 await connection.query(
-                  "INSERT INTO languages (Name) VALUES (?)",
+                  "INSERT INTO language (Name) VALUES (?)",
                   [name],
                 )
               )[0].insertId;
