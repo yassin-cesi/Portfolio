@@ -1,0 +1,156 @@
+[33mcommit 06315ded9da3adebd9d7b42edbdcd871413ef238[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Sun Aug 23 20:09:10 2026 +0200
+
+    Ignore les dumps SQL
+
+[33mcommit d086cf7a281d21ab314c51bc426ccee756d8557a[m[33m ([m[1;31morigin/dev[m[33m, [m[1;32mdev[m[33m)[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Sun Aug 23 16:39:58 2026 +0200
+
+    Fix error affichage projet
+
+[33mcommit e3d52c44c8159c44c0438795a335b2fc33f1d38c[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Sun Aug 23 16:36:38 2026 +0200
+
+    Fix : error connection with bdd and api to vps
+
+[33mcommit 520ed7320d7fe9bc418c99010cf8f679e6fb3a84[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Sun Aug 23 16:25:15 2026 +0200
+
+    Fix : Erreur Chemin CSS
+
+[33mcommit a7d92f3b3b786bbb7cdd9d5e8dede4fff6def121[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Sun Aug 23 16:21:43 2026 +0200
+
+    Fix : Erreur Code to VPS
+
+[33mcommit 324dbf356837dd055bdf571df9821b44c824a8f1[m
+Merge: faac91a e2290ba
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Tue Jun 16 19:19:34 2026 +0200
+
+    Merge branch 'dev' of https://github.com/yassin-cesi/Portfolio into dev
+
+[33mcommit e2290ba77f0e06c5332772e3e55f99c83781ba63[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Tue Jun 16 19:18:27 2026 +0200
+
+    Local site work
+
+[33mcommit faac91a9755376b1e635dce139c3b0f7b4974208[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Tue Jun 16 15:39:15 2026 +0200
+
+    fix const port
+
+[33mcommit 531b7d486291a0472140d620fe20063a03beebb0[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Tue Jun 16 15:37:25 2026 +0200
+
+    fix listen on 0.0.0.0
+
+[33mcommit 0dd7992eeb9632964b973d16beffa69d59b0c682[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Tue Jun 16 15:32:46 2026 +0200
+
+    Console.log for fix error db
+
+[33mcommit 4017a66050516160c4a8b4dc583b9d0e1da37e15[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Tue Jun 16 15:31:05 2026 +0200
+
+    fix database config with MYSQL variables
+
+[33mcommit f6dc8355bc60547f6eea4d5657217d754723b7c7[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Tue Jun 16 15:23:19 2026 +0200
+
+    update database config for Railway MySQL
+
+[33mcommit ea349da62850ffb9f256ff6e2c1d0772bb5e46c2[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Tue Jun 16 15:08:23 2026 +0200
+
+    fix PORT for Railway
+
+[33mcommit 1acba063e9b878a1f376534d85608fc310ab9de3[m
+Author: Waazux <yassinriahi03@gmail.com>
+Date:   Tue Jun 16 15:05:59 2026 +0200
+
+    Modificationn hosting website
+
+[33mcommit ff584c80483672ef33df7a4025314a62146162e9[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Sat Jun 13 13:22:22 2026 +0200
+
+    Security Upgrade
+
+[33mcommit 8a92bc8e59f11df88b77458ec97b08c768e409ee[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Sat Jun 13 12:07:46 2026 +0200
+
+    Switch backjgournd btn, Sending mail if new msg
+
+[33mcommit 8233c28b7c87a1208f7bb0180c819cc00c70f1fb[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Sat Jun 13 10:26:58 2026 +0200
+
+    Package-lock
+
+[33mcommit 138a7ce64bb3c4980364f911bd8adb6d8392a03e[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Sat Jun 13 10:00:19 2026 +0200
+
+    Sending Mail for new message
+
+[33mcommit 53fb341504cc58c1199582fbd1126e29af6ab0c8[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Sat Jun 13 09:33:05 2026 +0200
+
+    Fix bug image not load & Project Creation Bug
+
+[33mcommit b567dfc449690f3877a1aee9aba43373ee4395ba[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Sat Jun 13 07:59:14 2026 +0200
+
+    Fix Error Gitignore & Delete useless files and Update 1j => 30 min to login token
+
+[33mcommit 1f461862836762215ec3ff8cdd3fdfaada44cc69[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Fri Jun 12 17:36:06 2026 +0200
+
+    Update Admin Syst
+
+[33mcommit efcbcc039c70bc02750db1da341eb78cf5f0812d[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Fri Jun 12 14:57:12 2026 +0200
+
+    add login page, login system & admin syst
+
+[33mcommit ff097e7dec733f2017f174c48ec36c416de2d624[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Fri Jun 12 14:09:24 2026 +0200
+
+    Add Message Controller & Model, Add Front End : index.html, list projects
+
+[33mcommit 29ac1fcea8ecfedbc976f9d1462a9fe3869e0c59[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Fri Jun 12 13:13:28 2026 +0200
+
+    Auth Syst, Fix bugs , secrisation of routes
+
+[33mcommit 344c28204b69bd73b56fec0f23dcc4cf377642f8[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Fri Jun 12 11:51:26 2026 +0200
+
+    Update Project Model & Controller, ADD Model & Controller => Language & Types
+
+[33mcommit 199de25866233678ebd93852060d166c299d564b[m
+Author: Yassin Riahi <yassin.riahi@viacesi.fr>
+Date:   Fri Jun 12 11:34:29 2026 +0200
+
+    Initial Commit : Add Project Models, Controller, Routes
