@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/projects";
+const API_URL = "http://82.165.45.139/";
 
 // Variable globale pour stocker les projets une fois chargés
 let allProjects = [];
