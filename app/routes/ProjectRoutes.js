@@ -8,7 +8,7 @@ const path = require("path");
 // --- CONFIGURATION DE STORAGE MULTER ---
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, "../public/images");
+    const uploadPath = path.join(__dirname, "../../public/images");
 
     // Ajoute cette vérification pour créer le dossier s'il manque :
     const fs = require("fs");
