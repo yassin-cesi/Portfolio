@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const errorText = document.getElementById("login-error");
   const loginBtn = document.getElementById("btn-login");
 
-  // 1. Afficher / Masquer le mot de passe
   if (togglePasswordBtn && passwordInput && eyeIcon) {
     togglePasswordBtn.addEventListener("click", () => {
       const isPassword = passwordInput.type === "password";
@@ -16,11 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 2. Gestion de la soumission du formulaire
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      
+
       if (errorText) errorText.innerText = "";
       if (loginBtn) {
         loginBtn.innerText = "Connexion...";
@@ -33,8 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const response = await fetch("/api/auth/login", {
           method: "POST",
-          headers: { 
-            "Content-Type": "application/json" 
+          headers: {
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({ email, password }),
         });
@@ -42,17 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await response.json();
 
         if (response.ok) {
-          // Prise en compte des formats de réponse courants : data.token, data.accessToken ou data.jwt
           const token = data.token || data.accessToken || data.jwt;
 
           if (token) {
             localStorage.setItem("adminToken", token);
-            // Redirection vers le dashboard d'administration
+            // Redirection absolue vers le dashboard
             window.location.href = "/admin/authorized/admin.html";
           } else {
-            console.error("Aucun token détecté dans la réponse :", data);
             if (errorText) {
-              errorText.innerText = "Erreur du serveur (aucun token d'authentification reçu).";
+              errorText.innerText = "Erreur du serveur (aucun token reçu).";
             }
           }
         } else {

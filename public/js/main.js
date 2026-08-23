@@ -1,14 +1,13 @@
-const API_URL = "http://82.165.45.139/";
-
-// Variable globale pour stocker les projets une fois chargés
+// Variable globale pour stocker les projets
 let allProjects = [];
 
 async function loadProjects() {
   const container = document.getElementById("projects-container");
-  if (!container) return; // Sécurité
+  if (!container) return;
 
   try {
-    const response = await fetch(API_URL);
+    // Utilisation du chemin relatif vers l'API
+    const response = await fetch("/api/projects");
     if (!response.ok) throw new Error("Erreur lors de la récupération");
 
     allProjects = await response.json();
@@ -24,14 +23,14 @@ async function loadProjects() {
       projectCard.classList.add("project-card");
 
       const title = project.title || project.Title || "Titre inconnu";
-      const desc =
-        project.description || project.Description || "Pas de description";
+      const desc = project.description || project.Description || "Pas de description";
       const id = project.id || project.IdProject;
       const images = project.images || [];
 
       let mainImage = images.find((img) => img.IsMain === 1) || images[0];
+      // Image servie via le chemin absolu /images/
       const imagePath = mainImage
-        ? `http://localhost:3000/images/${mainImage.ImageUrl}`
+        ? `/images/${mainImage.ImageUrl}`
         : "images/placeholder.png";
 
       let languagesHTML = "";
@@ -40,7 +39,6 @@ async function loadProjects() {
         languagesHTML += `<span class="lang-badge">${lang.Name || lang.name}</span>`;
       });
 
-      // CORRECTION : Gestion des 2 liens GitHub
       let linksHTML = "";
       const link1 = project.githubLink || project.Github_Link;
       const link2 = project.githubLink2 || project.Github_Link2;
@@ -85,7 +83,7 @@ function setupModalEvents() {
     button.addEventListener("click", (e) => {
       const projectId = parseInt(e.target.getAttribute("data-id"));
       const project = allProjects.find(
-        (p) => (p.id || p.IdProject) === projectId,
+        (p) => (p.id || p.IdProject) === projectId
       );
 
       if (project) {
@@ -100,7 +98,7 @@ function setupModalEvents() {
         const images = project.images || [];
         images.forEach((img) => {
           const imgElement = document.createElement("img");
-          imgElement.src = `http://localhost:3000/images/${img.ImageUrl}`;
+          imgElement.src = `/images/${img.ImageUrl}`;
           imgElement.alt = "Projet";
           imgElement.classList.add("modal-gallery-img");
           imgElement.onclick = () => {
@@ -114,42 +112,35 @@ function setupModalEvents() {
     });
   });
 
-  closeModalBtn?.addEventListener(
-    "click",
-    () => (modal.style.display = "none"),
-  );
-  closeLightboxBtn?.addEventListener(
-    "click",
-    () => (lightbox.style.display = "none"),
-  );
+  closeModalBtn?.addEventListener("click", () => (modal.style.display = "none"));
+  closeLightboxBtn?.addEventListener("click", () => (lightbox.style.display = "none"));
   window.addEventListener("click", (e) => {
     if (e.target === modal) modal.style.display = "none";
     if (e.target === lightbox) lightbox.style.display = "none";
   });
 }
 
-// --- GESTION THÈME ET CONTACT (Initialisation unique) ---
 document.addEventListener("DOMContentLoaded", () => {
   loadProjects();
 
-  // Gestion Thème
+  // Gestion du Thème Clair / Sombre
   const themeToggle = document.getElementById("theme-toggle");
+  if (themeToggle) {
+    if (localStorage.getItem("theme") === "light") {
+      document.body.classList.add("light-mode");
+      themeToggle.checked = true;
+    }
 
-  // Appliquer au chargement
-  if (localStorage.getItem("theme") === "light") {
-    document.body.classList.add("light-mode");
-    themeToggle.checked = true;
+    themeToggle.addEventListener("change", () => {
+      document.body.classList.toggle("light-mode");
+      localStorage.setItem(
+        "theme",
+        document.body.classList.contains("light-mode") ? "light" : "dark"
+      );
+    });
   }
 
-  themeToggle.addEventListener("change", () => {
-    document.body.classList.toggle("light-mode");
-    localStorage.setItem(
-      "theme",
-      document.body.classList.contains("light-mode") ? "light" : "dark",
-    );
-  });
-
-  // Gestion Contact
+  // Formulaire de Contact
   const contactForm = document.getElementById("contact-form");
   const formResponse = document.getElementById("form-response");
   const submitBtn = document.getElementById("btn-submit");
@@ -158,7 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
     contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      // Validation : tous les champs doivent être remplis
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const subject = document.getElementById("subject").value.trim();
@@ -173,18 +163,11 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.innerText = "Envoi en cours...";
       submitBtn.disabled = true;
 
-      const formData = {
-        name,
-        email,
-        subject,
-        content,
-      };
-
       try {
-        const response = await fetch("http://localhost:3000/api/messages", {
+        const response = await fetch("/api/messages", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({ name, email, subject, content }),
         });
         const result = await response.json();
         if (response.ok) {
