@@ -9,7 +9,7 @@ const fs = require("fs");
 // --- CONFIGURATION DE STORAGE MULTER ---
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, "../public/images");
+    const uploadPath = path.join(__dirname, "../../public/images");
 
     // Crée le dossier s'il manque
     if (!fs.existsSync(uploadPath)) {
@@ -19,12 +19,8 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    // Évite les collisions de noms de fichiers identiques
-    // tout en gardant une trace du nom d'origine
-    const ext = path.extname(file.originalname);
-    const baseName = path.basename(file.originalname, ext);
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, `${baseName}-${uniqueSuffix}${ext}`);
+    // Garde le nom original du fichier tel quel
+    cb(null, file.originalname);
   },
 });
 
@@ -100,7 +96,7 @@ router.post(
 router.put(
   "/:id",
   auth,
-  handleUpload(upload.array("projectImages", 12)),
+  upload.array("projectImages", 10),
   projectsController.updateProject,
 );
 

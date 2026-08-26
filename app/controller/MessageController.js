@@ -1,6 +1,15 @@
-require("dotenv").config();
-const { Resend } = require("resend");
+require("dotenv").config(); // Important : charge les variables d'environnement
 const Message = require("../models/Message");
+const nodemailer = require("nodemailer");
+
+// Configuration du transporteur
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -16,6 +25,7 @@ exports.sendMessage = async (req, res) => {
       });
     }
 
+    // Vérifier que ce ne sont pas juste des espaces
     if (!name.trim() || !email.trim() || !subject.trim() || !content.trim()) {
       return res.status(400).json({
         message: "Tous les champs doivent contenir du texte.",
@@ -25,21 +35,25 @@ exports.sendMessage = async (req, res) => {
     // 1. Enregistrement en base de données
     await Message.create({ name, email, subject, content });
 
-    // 2. Envoi de l'e-mail via Resend
+    // 2. Préparation de l'e-mail avec une mise en forme HTML
+    const mailOptions = {
+      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,
+      subject: `📧 Nouveau message : ${subject || "Sans objet"}`,
+      html: `
+        <h3>Vous avez reçu un nouveau message sur votre portfolio</h3>
+        <p><strong>Nom :</strong> ${name}</p>
+        <p><strong>Email :</strong> ${email}</p>
+        <p><strong>Objet :</strong> ${subject || "Sans objet"}</p>
+        <p><strong>Message :</strong><br>${content.replace(/\n/g, "<br>")}</p>
+      `,
+    };
+
+    // 3. Envoi de l'e-mail
     try {
-      await resend.emails.send({
-        from: "Portfolio Contact <onboarding@resend.dev>",
-        to: process.env.EMAIL_USER,
-        subject: `📧 Nouveau message : ${subject || "Sans objet"}`,
-        html: `
-          <h3>Vous avez reçu un nouveau message sur votre portfolio</h3>
-          <p><strong>Nom :</strong> ${name}</p>
-          <p><strong>Email :</strong> ${email}</p>
-          <p><strong>Objet :</strong> ${subject || "Sans objet"}</p>
-          <p><strong>Message :</strong><br>${content.replace(/\n/g, "<br>")}</p>
-        `,
-      });
+      await transporter.sendMail(mailOptions);
     } catch (mailError) {
+      // On logue l'erreur mais on ne bloque pas la réponse client
       console.error("Erreur lors de l'envoi de l'email :", mailError);
     }
 

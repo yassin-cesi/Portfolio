@@ -10,20 +10,19 @@ const typeRoutes = require("./app/routes/TypeRoutes.js");
 const authRoutes = require("./app/routes/AuthRoutes.js");
 
 const app = express();
-app.set("trust proxy", 1);
+
+// 1. Sécurité Helmet adaptée pour autoriser les fichiers statiques & scripts
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: false, // Désactivé temporairement pour éviter le blocage du CSS/JS
   }),
 );
 
+// 2. Configuration CORS ouverte au VPS et au dev local
 app.use(
   cors({
-    origin: [
-      "http://localhost:5500",
-      "http://127.0.0.1:5500",
-      "https://yassinriahi.fr",
-    ],
+    origin: true, // Autorise dynamiquement l'origine qui fait la requête (VPS ou Local)
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -33,17 +32,14 @@ app.use(
 app.use(hpp());
 app.use(express.json());
 
+// 3. Déclaration des routes API
 app.use("/api/projects", projectRoutes);
 app.use("/api/types", typeRoutes);
 app.use("/api/languages", languageRoutes);
 app.use("/api/auth", authRoutes);
-
-app.use("/images", express.static(path.join(__dirname, "./app/public/images")));
-
 app.use("/api/messages", require("./app/routes/MessageRoutes"));
 
-const PORT = process.env.PORT || 3000;
+// 4. Service des fichiers statiques (Images)
+app.use("/images", express.static(path.join(__dirname, "public/images")));
 
-app.listen(PORT, "0.0.0.0", () =>
-  console.log(`Serveur connecté sur le port ${PORT}`),
-);
+app.listen(3000, () => console.log("Le serveur tourne sur le port 3000"));

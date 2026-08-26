@@ -227,7 +227,6 @@ input:checked ~ .slider .icon-sun {
   gap: 24px;
   max-width: 1200px;
   margin: 40px auto;
- 
 }
 
 .loading-msg {
@@ -247,7 +246,7 @@ input:checked ~ .slider .icon-sun {
   transition:
     transform 0.2s ease,
     border-color 0.2s ease;
-   box-shadow: 0 20px 40px var(--shadow-card);
+  box-shadow: 0 20px 40px var(--shadow-card);
 }
 
 .project-card:hover {

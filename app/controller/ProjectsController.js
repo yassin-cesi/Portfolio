@@ -281,15 +281,16 @@ exports.updateProject = async (req, res) => {
           "SELECT IdLanguage FROM language WHERE Name = ?",
           [name],
         );
-        const langId =
-          rows.length > 0
-            ? rows[0].IdLanguage
-            : (
-                await connection.query(
-                  "INSERT INTO language (Name) VALUES (?)",
-                  [name],
-                )
-              )[0].insertId;
+        let langId;
+        if (rows.length > 0) {
+          langId = rows[0].IdLanguage;
+        } else {
+          const [insertResult] = await connection.query(
+            "INSERT INTO language (Name) VALUES (?)",
+            [name],
+          );
+          langId = insertResult.insertId;
+        }
         await connection.query(
           "INSERT INTO project_language (IdProject, IdLanguage) VALUES (?, ?)",
           [id, langId],

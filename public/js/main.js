@@ -1,6 +1,4 @@
-const API_URL = "https://portfolio-production-aa49.up.railway.app/api/projects";
-
-// Variable globale pour stocker les projets une fois chargés
+// Variable globale pour stocker les projets
 let allProjects = [];
 
 // Construit les liens vers le code source avec un libellé clair plutôt que
@@ -21,13 +19,11 @@ function buildGithubLinksHTML(link1, link2, linkClass) {
 
 async function loadProjects() {
   const container = document.getElementById("projects-container");
-  if (!container) return; // Sécurité
-
-  // Petit état de chargement pour éviter le "trou" vide pendant l'appel API
-  container.innerHTML = `<p class="loading-msg">Chargement des projets…</p>`;
+  if (!container) return;
 
   try {
-    const response = await fetch(API_URL);
+    // Utilisation du chemin relatif vers l'API
+    const response = await fetch("/api/projects");
     if (!response.ok) throw new Error("Erreur lors de la récupération");
 
     allProjects = await response.json();
@@ -49,8 +45,9 @@ async function loadProjects() {
       const images = project.images || [];
 
       let mainImage = images.find((img) => img.IsMain === 1) || images[0];
+      // Image servie via le chemin absolu /images/
       const imagePath = mainImage
-        ? `https://portfolio-production-aa49.up.railway.app/images/${mainImage.ImageUrl}`
+        ? `/images/${mainImage.ImageUrl}`
         : "images/placeholder.png";
 
       let languagesHTML = "";
@@ -59,10 +56,14 @@ async function loadProjects() {
         languagesHTML += `<span class="lang-badge">${lang.Name || lang.name}</span>`;
       });
 
-      // Liens vers le code source (frontend / backend, ou générique si un seul lien)
+      let linksHTML = "";
       const link1 = project.githubLink || project.Github_Link;
       const link2 = project.githubLink2 || project.Github_Link2;
-      const linksHTML = buildGithubLinksHTML(link1, link2, "project-link");
+
+      if (link1)
+        linksHTML += `<a href="${link1}" target="_blank" class="project-link">Code 1</a>`;
+      if (link2)
+        linksHTML += `<a href="${link2}" target="_blank" class="project-link">Code 2</a>`;
 
       projectCard.innerHTML = `
         <div class="project-img-wrapper">
@@ -103,35 +104,22 @@ function setupModalEvents() {
       );
 
       if (project) {
-        const title = project.title || project.Title;
-
-        document.getElementById("modal-title").innerText = title;
+        document.getElementById("modal-title").innerText =
+          project.title || project.Title;
         document.getElementById("modal-desc").innerText =
           project.description || project.Description;
-
-        const modalLinksContainer = document.getElementById("modal-links");
-        if (modalLinksContainer) {
-          const mLink1 = project.githubLink || project.Github_Link;
-          const mLink2 = project.githubLink2 || project.Github_Link2;
-          modalLinksContainer.innerHTML = buildGithubLinksHTML(
-            mLink1,
-            mLink2,
-            "modal-link-btn",
-          );
-        }
 
         const galleryContainer = document.getElementById("modal-gallery");
         galleryContainer.innerHTML = "";
 
         const images = project.images || [];
-        images.forEach((img, index) => {
+        images.forEach((img) => {
           const imgElement = document.createElement("img");
-          imgElement.src = `https://portfolio-production-aa49.up.railway.app/images/${img.ImageUrl}`;
-          imgElement.alt = `${title} – image ${index + 1}`;
+          imgElement.src = `/images/${img.ImageUrl}`;
+          imgElement.alt = "Projet";
           imgElement.classList.add("modal-gallery-img");
           imgElement.onclick = () => {
             lightboxImg.src = imgElement.src;
-            lightboxImg.alt = imgElement.alt;
             lightbox.style.display = "flex";
           };
           galleryContainer.appendChild(imgElement);
@@ -153,46 +141,29 @@ function setupModalEvents() {
     if (e.target === modal) modal.style.display = "none";
     if (e.target === lightbox) lightbox.style.display = "none";
   });
-
-  // Fermeture au clavier (Échap) : pratique attendue pour toute fenêtre superposée
-  window.addEventListener("keydown", (e) => {
-    if (e.key !== "Escape") return;
-    if (lightbox.style.display === "flex") {
-      lightbox.style.display = "none";
-    } else if (modal.style.display === "flex") {
-      modal.style.display = "none";
-    }
-  });
 }
 
-// --- GESTION THÈME ET CONTACT (Initialisation unique) ---
 document.addEventListener("DOMContentLoaded", () => {
   loadProjects();
 
-  // Gestion Thème
+  // Gestion du Thème Clair / Sombre
   const themeToggle = document.getElementById("theme-toggle");
+  if (themeToggle) {
+    if (localStorage.getItem("theme") === "light") {
+      document.body.classList.add("light-mode");
+      themeToggle.checked = true;
+    }
 
-  // Appliquer au chargement : préférence sauvegardée, sinon préférence système
-  const savedTheme = localStorage.getItem("theme");
-  const prefersLight =
-    !savedTheme &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: light)").matches;
-
-  if (savedTheme === "light" || prefersLight) {
-    document.body.classList.add("light-mode");
-    themeToggle.checked = true;
+    themeToggle.addEventListener("change", () => {
+      document.body.classList.toggle("light-mode");
+      localStorage.setItem(
+        "theme",
+        document.body.classList.contains("light-mode") ? "light" : "dark",
+      );
+    });
   }
 
-  themeToggle.addEventListener("change", () => {
-    document.body.classList.toggle("light-mode");
-    localStorage.setItem(
-      "theme",
-      document.body.classList.contains("light-mode") ? "light" : "dark",
-    );
-  });
-
-  // Gestion Contact
+  // Formulaire de Contact
   const contactForm = document.getElementById("contact-form");
   const formResponse = document.getElementById("form-response");
   const submitBtn = document.getElementById("btn-submit");
@@ -201,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
     contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      // Validation : tous les champs doivent être remplis
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const subject = document.getElementById("subject").value.trim();
@@ -216,18 +186,11 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.innerText = "Envoi en cours...";
       submitBtn.disabled = true;
 
-      const formData = {
-        name,
-        email,
-        subject,
-        content,
-      };
-
       try {
-        const response = await fetch("https://portfolio-production-aa49.up.railway.app/api/messages", {
+        const response = await fetch("/api/messages", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({ name, email, subject, content }),
         });
         const result = await response.json();
         if (response.ok) {
