@@ -11,7 +11,6 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Envoi d'un message (Public)
 exports.sendMessage = async (req, res) => {
