@@ -45,7 +45,7 @@ router.post(
 router.put(
   "/:id",
   auth,
-  upload.array("projectImages", 6),
+  upload.array("projectImages", 10),
   projectsController.updateProject,
 );
 
