@@ -13,7 +13,7 @@ class User {
   // Trouver un utilisateur par son email pour la connexion
   static async findByEmail(email) {
     try {
-      const [rows] = await db.query("SELECT * FROM USERS WHERE Email = ?", [
+      const [rows] = await db.query("SELECT * FROM users WHERE Email = ?", [
         email,
       ]);
       if (rows.length === 0) return null;

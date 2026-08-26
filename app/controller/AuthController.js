@@ -60,7 +60,7 @@ exports.register = async (req, res) => {
 
     // 4. Insérer le nouvel utilisateur (IdRole = 1 pour être ADMIN directement !)
     const insertUserQuery = `
-      INSERT INTO USERS (FirstName, LastName, Email, Password, IdRole, IdAddress) 
+      INSERT INTO users (FirstName, LastName, Email, Password, IdRole, IdAddress) 
       VALUES (?, ?, ?, ?, ?, ?)
     `;
 
