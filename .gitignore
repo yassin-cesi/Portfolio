@@ -15,8 +15,5 @@ dist/
 build/
 
 
-<<<<<<< HEAD
-=======
 config/bdd_portfolio.sql
 config/bdd_portfolio_1.sql
->>>>>>> 5d66b707c5bafe4f67c070c10545b106b53bf969
