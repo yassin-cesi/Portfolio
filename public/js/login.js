@@ -6,66 +6,69 @@ document.addEventListener("DOMContentLoaded", () => {
   const errorText = document.getElementById("login-error");
   const loginBtn = document.getElementById("btn-login");
 
-  // 1. Logique pour voir/masquer le mot de passe
-  togglePasswordBtn.addEventListener("click", () => {
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      eyeIcon.classList.remove("fa-eye");
-      eyeIcon.classList.add("fa-eye-slash"); // Change l'icône
-    } else {
-      passwordInput.type = "password";
-      eyeIcon.classList.remove("fa-eye-slash");
-      eyeIcon.classList.add("fa-eye");
-    }
-  });
+  if (togglePasswordBtn && passwordInput && eyeIcon) {
+    togglePasswordBtn.addEventListener("click", () => {
+      const isPassword = passwordInput.type === "password";
+      passwordInput.type = isPassword ? "text" : "password";
+      eyeIcon.classList.toggle("fa-eye", !isPassword);
+      eyeIcon.classList.toggle("fa-eye-slash", isPassword);
+    });
+  }
 
-  // 2. Gestion de la soumission du formulaire
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    errorText.innerText = "";
-    loginBtn.innerText = "Connexion...";
-    loginBtn.disabled = true;
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    const email = document.getElementById("email").value;
-    const password = passwordInput.value;
-
-    try {
-      console.log("Tentative de connexion pour :", email);
-
-      const response = await fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      console.log("Statut de la réponse du serveur :", response.status);
-      const data = await response.json();
-      console.log("Données renvoyées par le serveur :", data);
-
-      if (response.ok) {
-        // Si ton Back-End renvoie le token sous une autre clé (ex: data.token ou data.accessToken)
-        const token = data.token || data.accessToken;
-
-        if (token) {
-          localStorage.setItem("adminToken", token);
-          window.location.href = "../admin/authorized/admin.html";
-        } else {
-          console.error(
-            "Le serveur a validé la connexion mais n'a renvoyé aucun token. Vérifie la clé dans ton controlleur login.",
-          );
-          errorText.innerText =
-            "Erreur de configuration du serveur (pas de token reçu).";
-        }
-      } else {
-        errorText.innerText = data.message || "Identifiants incorrects.";
+      if (errorText) errorText.innerText = "";
+      if (loginBtn) {
+        loginBtn.innerText = "Connexion...";
+        loginBtn.disabled = true;
       }
-    } catch (error) {
-      console.error("Erreur attrapée par le script de login :", error);
-      errorText.innerText =
-        "Impossible de joindre le serveur d'authentification.";
-    } finally {
-      loginBtn.innerText = "Se connecter";
-      loginBtn.disabled = false;
-    }
-  });
+
+      const email = document.getElementById("email")?.value.trim();
+      const password = passwordInput?.value;
+
+      try {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const token = data.token || data.accessToken || data.jwt;
+
+          if (token) {
+            localStorage.setItem("adminToken", token);
+            // Redirection absolue vers le dashboard
+            window.location.href = "/admin/authorized/admin.html";
+          } else {
+            if (errorText) {
+              errorText.innerText = "Erreur du serveur (aucun token reçu).";
+            }
+          }
+        } else {
+          if (errorText) {
+            errorText.innerText =
+              data.message || data.error || "Identifiants incorrects.";
+          }
+        }
+      } catch (error) {
+        console.error("Erreur de connexion :", error);
+        if (errorText) {
+          errorText.innerText =
+            "Impossible de contacter le serveur d'authentification.";
+        }
+      } finally {
+        if (loginBtn) {
+          loginBtn.innerText = "Se connecter";
+          loginBtn.disabled = false;
+        }
+      }
+    });
+  }
 });
