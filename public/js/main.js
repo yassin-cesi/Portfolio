@@ -56,14 +56,11 @@ async function loadProjects() {
         languagesHTML += `<span class="lang-badge">${lang.Name || lang.name}</span>`;
       });
 
-      let linksHTML = "";
-      const link1 = project.githubLink || project.Github_Link;
-      const link2 = project.githubLink2 || project.Github_Link2;
-
-      if (link1)
-        linksHTML += `<a href="${link1}" target="_blank" class="project-link">Code 1</a>`;
-      if (link2)
-        linksHTML += `<a href="${link2}" target="_blank" class="project-link">Code 2</a>`;
+      const linksHTML = buildGithubLinksHTML(
+        project.githubLink || project.Github_Link,
+        project.githubLink2 || project.Github_Link2,
+        "project-link",
+      );
 
       projectCard.innerHTML = `
         <div class="project-img-wrapper">
@@ -172,19 +169,23 @@ document.addEventListener("DOMContentLoaded", () => {
     contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const subject = document.getElementById("subject").value.trim();
-      const content = document.getElementById("content").value.trim();
+      const name = document.getElementById("name")?.value.trim();
+      const email = document.getElementById("email")?.value.trim();
+      const subject = document.getElementById("subject")?.value.trim();
+      const content = document.getElementById("content")?.value.trim();
 
       if (!name || !email || !subject || !content) {
-        formResponse.innerText = "❌ Tous les champs sont obligatoires.";
-        formResponse.className = "form-response error";
+        if (formResponse) {
+          formResponse.innerText = "❌ Tous les champs sont obligatoires.";
+          formResponse.className = "form-response error";
+        }
         return;
       }
 
-      submitBtn.innerText = "Envoi en cours...";
-      submitBtn.disabled = true;
+      if (submitBtn) {
+        submitBtn.innerText = "Envoi en cours...";
+        submitBtn.disabled = true;
+      }
 
       try {
         const response = await fetch("/api/messages", {
@@ -194,19 +195,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         const result = await response.json();
         if (response.ok) {
-          formResponse.innerText = "✨ " + result.message;
-          formResponse.className = "form-response success";
+          if (formResponse) {
+            formResponse.innerText = "✨ " + result.message;
+            formResponse.className = "form-response success";
+          }
           contactForm.reset();
         } else {
-          formResponse.innerText = "❌ " + result.message;
-          formResponse.className = "form-response error";
+          if (formResponse) {
+            formResponse.innerText = "❌ " + result.message;
+            formResponse.className = "form-response error";
+          }
         }
       } catch (error) {
-        formResponse.innerText = "❌ Impossible de joindre le serveur.";
-        formResponse.className = "form-response error";
+        if (formResponse) {
+          formResponse.innerText = "❌ Impossible de joindre le serveur.";
+          formResponse.className = "form-response error";
+        }
       } finally {
-        submitBtn.innerText = "Envoyer le message";
-        submitBtn.disabled = false;
+        if (submitBtn) {
+          submitBtn.innerText = "Envoyer le message";
+          submitBtn.disabled = false;
+        }
       }
     });
   }

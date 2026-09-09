@@ -16,7 +16,7 @@ function switchTab(tabId, event) {
     .querySelectorAll(".admin-nav a")
     .forEach((link) => link.classList.remove("active"));
 
-  document.getElementById(`tab-${tabId}`).classList.add("active");
+  document.getElementById(`tab-${tabId}`)?.classList.add("active");
 
   if (event && event.currentTarget) {
     event.currentTarget.classList.add("active");
@@ -28,6 +28,8 @@ function switchTab(tabId, event) {
 
 async function fetchMessages() {
   const listContainer = document.getElementById("messages-list");
+  if (!listContainer) return;
+
   try {
     const response = await fetch(`${API_BASE}/messages`, {
       method: "GET",
@@ -160,7 +162,7 @@ window.prepareEditProject = function (projectId) {
 
 window.resetProjectForm = function () {
   document.getElementById("proj-id").value = "";
-  document.getElementById("add-project-form").reset();
+  document.getElementById("add-project-form")?.reset();
 
   document.getElementById("form-project-title").innerText =
     "Ajouter un Nouveau Projet";
@@ -180,7 +182,7 @@ document
   ?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const responseText = document.getElementById("project-response");
-    responseText.innerText = "";
+    if (responseText) responseText.innerText = "";
 
     const projectId = document.getElementById("proj-id").value;
     const isEditing = projectId !== "";
@@ -203,13 +205,15 @@ document
     );
 
     const imageInput = document.getElementById("proj-image");
-    if (imageInput.files.length > 0) {
+    if (imageInput && imageInput.files.length > 0) {
       for (let i = 0; i < imageInput.files.length; i++) {
         formData.append("projectImages", imageInput.files[i]);
       }
     } else if (!isEditing) {
-      responseText.innerText = "❌ Veuillez sélectionner au moins une image.";
-      responseText.style.color = "#ef4444";
+      if (responseText) {
+        responseText.innerText = "❌ Veuillez sélectionner au moins une image.";
+        responseText.style.color = "#ef4444";
+      }
       return;
     }
 
@@ -227,32 +231,43 @@ document
         body: formData,
       });
 
-      let result;
       const rawText = await response.text();
+      let result;
       try {
         result = JSON.parse(rawText);
       } catch {
-        responseText.innerText = `❌ Réponse inattendue du serveur.`;
-        responseText.style.color = "#ef4444";
+        console.error("Réponse non-JSON du serveur :", rawText);
+        if (responseText) {
+          responseText.innerText = "❌ Réponse inattendue du serveur.";
+          responseText.style.color = "#ef4444";
+        }
         return;
       }
 
       if (response.ok) {
-        responseText.innerText = isEditing
-          ? "✏️ Modifications enregistrées avec succès !"
-          : result.message || "✨ Projet publié avec succès !";
-        responseText.style.color = "#10b981";
+        if (responseText) {
+          responseText.innerText = isEditing
+            ? "✏️ Modifications enregistrées avec succès !"
+            : result.message || "✨ Projet publié avec succès !";
+          responseText.style.color = "#10b981";
+        }
 
         resetProjectForm();
         fetchAdminProjects();
       } else {
         const errorMsg = result.message || result.error || "Action impossible";
-        responseText.innerText = `❌ Erreur ${response.status} : ${errorMsg}`;
-        responseText.style.color = "#ef4444";
+        if (responseText) {
+          responseText.innerText = `❌ Erreur ${response.status} : ${errorMsg}`;
+          responseText.style.color = "#ef4444";
+        }
+        console.error("Détail erreur serveur :", result);
       }
     } catch (error) {
-      responseText.innerText = `❌ Erreur réseau : ${error.message}`;
-      responseText.style.color = "#ef4444";
+      console.error("Erreur envoi formulaire admin:", error);
+      if (responseText) {
+        responseText.innerText = `❌ Erreur réseau : ${error.message}`;
+        responseText.style.color = "#ef4444";
+      }
     }
   });
 

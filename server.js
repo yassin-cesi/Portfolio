@@ -8,21 +8,22 @@ const projectRoutes = require("./app/routes/ProjectRoutes.js");
 const languageRoutes = require("./app/routes/LanguageRoutes.js");
 const typeRoutes = require("./app/routes/TypeRoutes.js");
 const authRoutes = require("./app/routes/AuthRoutes.js");
+const messageRoutes = require("./app/routes/MessageRoutes.js");
 
 const app = express();
 
-// 1. Sécurité Helmet adaptée pour autoriser les fichiers statiques & scripts
+// 1. Sécurité Helmet (autorise les ressources cross-origin pour le chargement des images/assets)
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
-    contentSecurityPolicy: false, // Désactivé temporairement pour éviter le blocage du CSS/JS
+    contentSecurityPolicy: false,
   }),
 );
 
-// 2. Configuration CORS ouverte au VPS et au dev local
+// 2. Configuration CORS (compatible VPS et développement local)
 app.use(
   cors({
-    origin: true, // Autorise dynamiquement l'origine qui fait la requête (VPS ou Local)
+    origin: true,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -37,9 +38,11 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/types", typeRoutes);
 app.use("/api/languages", languageRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/messages", require("./app/routes/MessageRoutes"));
+app.use("/api/messages", messageRoutes);
 
 // 4. Service des fichiers statiques (Images)
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
-app.listen(3000, () => console.log("Le serveur tourne sur le port 3000"));
+app.listen(3000, () => {
+  console.log("Le serveur tourne sur le port 3000");
+});
