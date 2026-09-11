@@ -1,10 +1,38 @@
 // Variable globale pour stocker les projets
 let allProjects = [];
 
-// Construit les liens vers le code source avec un libellé clair plutôt que
-// "Github 1" / "Github 2". Quand les deux liens sont présents, on suppose le
-// schéma le plus courant (frontend / backend). S'il n'y en a qu'un, on reste
-// générique puisqu'on ne sait pas lequel des deux il représente.
+// Données factices de secours au cas où l'API est hors-ligne / en local
+const MOCK_PROJECTS = [
+  {
+    id: 1,
+    title: "Portfolio Personnel",
+    description:
+      "Plateforme web moderne avec gestion dynamique du thème et interface responsive.",
+    languages: [{ name: "HTML5" }, { name: "CSS3" }, { name: "JavaScript" }],
+    githubLink: "https://github.com/yassin-cesi",
+  },
+  {
+    id: 2,
+    title: "Application E-Commerce",
+    description:
+      "Application web d'inventaire et de gestion de panier connectée à une API REST.",
+    languages: [{ name: "React" }, { name: "Node.js" }, { name: "MySQL" }],
+    githubLink: "https://github.com/yassin-cesi",
+  },
+];
+
+// 1. Affiche des Skeletons animés pendant l'attente
+function showSkeletons(container) {
+  container.innerHTML = `
+    <div class="skeleton-card" style="padding: 20px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); margin-bottom: 16px;">
+      <div style="height: 20px; width: 40%; background: rgba(255, 255, 255, 0.1); border-radius: 4px; margin-bottom: 12px;"></div>
+      <div style="height: 14px; width: 80%; background: rgba(255, 255, 255, 0.1); border-radius: 4px; margin-bottom: 8px;"></div>
+      <div style="height: 14px; width: 60%; background: rgba(255, 255, 255, 0.1); border-radius: 4px;"></div>
+    </div>
+  `;
+}
+
+// 2. Génération du HTML des liens GitHub
 function buildGithubLinksHTML(link1, link2, linkClass) {
   let html = "";
   if (link1 && link2) {
@@ -17,72 +45,84 @@ function buildGithubLinksHTML(link1, link2, linkClass) {
   return html;
 }
 
-async function loadProjects() {
-  const container = document.getElementById("projects-container");
-  if (!container) return;
+// 3. Affichage effectif de la liste des projets
+function renderProjectsList(projects, container) {
+  container.innerHTML = "";
 
-  try {
-    // Utilisation du chemin relatif vers l'API
-    const response = await fetch("/api/projects");
-    if (!response.ok) throw new Error("Erreur lors de la récupération");
+  if (!projects || projects.length === 0) {
+    container.innerHTML = "<p>Aucun projet trouvé.</p>";
+    return;
+  }
 
-    allProjects = await response.json();
-    container.innerHTML = "";
+  projects.forEach((project) => {
+    const projectCard = document.createElement("div");
+    projectCard.classList.add("project-card");
 
-    if (allProjects.length === 0) {
-      container.innerHTML = "<p>Aucun projet trouvé.</p>";
-      return;
-    }
+    const title = project.title || project.Title || "Titre inconnu";
+    const desc =
+      project.description || project.Description || "Pas de description";
+    const id = project.id || project.IdProject;
+    const images = project.images || [];
 
-    allProjects.forEach((project) => {
-      const projectCard = document.createElement("div");
-      projectCard.classList.add("project-card");
+    let mainImage = images.find((img) => img.IsMain === 1) || images[0];
+    const imagePath = mainImage
+      ? `/images/${mainImage.ImageUrl}`
+      : "images/placeholder.png";
 
-      const title = project.title || project.Title || "Titre inconnu";
-      const desc =
-        project.description || project.Description || "Pas de description";
-      const id = project.id || project.IdProject;
-      const images = project.images || [];
-
-      let mainImage = images.find((img) => img.IsMain === 1) || images[0];
-      // Image servie via le chemin absolu /images/
-      const imagePath = mainImage
-        ? `/images/${mainImage.ImageUrl}`
-        : "images/placeholder.png";
-
-      let languagesHTML = "";
-      const languagesArray = project.languages || project.Languages || [];
-      languagesArray.forEach((lang) => {
-        languagesHTML += `<span class="lang-badge">${lang.Name || lang.name}</span>`;
-      });
-
-      const linksHTML = buildGithubLinksHTML(
-        project.githubLink || project.Github_Link,
-        project.githubLink2 || project.Github_Link2,
-        "project-link",
-      );
-
-      projectCard.innerHTML = `
-        <div class="project-img-wrapper">
-          <img src="${imagePath}" alt="${title}" class="project-img">
-        </div>
-        <div class="project-info">
-          <h3 class="project-title">${title}</h3>
-          <p class="project-desc">${desc}</p>
-          <div class="project-badges">${languagesHTML}</div>
-          <div class="project-footer">
-            <button class="btn-details" data-id="${id}">En savoir plus</button>
-            <div class="project-links">${linksHTML}</div>
-          </div>
-        </div>
-      `;
-      container.appendChild(projectCard);
+    let languagesHTML = "";
+    const languagesArray = project.languages || project.Languages || [];
+    languagesArray.forEach((lang) => {
+      languagesHTML += `<span class="lang-badge">${lang.Name || lang.name}</span>`;
     });
 
-    setupModalEvents();
+    const link1 = project.githubLink || project.Github_Link;
+    const link2 = project.githubLink2 || project.Github_Link2;
+    const linksHTML = buildGithubLinksHTML(link1, link2, "project-link");
+
+    projectCard.innerHTML = `
+      <div class="project-img-wrapper">
+        <img src="${imagePath}" alt="${title}" class="project-img" onerror="this.style.display='none'">
+      </div>
+      <div class="project-info">
+        <h3 class="project-title">${title}</h3>
+        <p class="project-desc">${desc}</p>
+        <div class="project-badges">${languagesHTML}</div>
+        <div class="project-footer">
+          <button class="btn-details" data-id="${id}">En savoir plus</button>
+          <div class="project-links">${linksHTML}</div>
+        </div>
+      </div>
+    `;
+    container.appendChild(projectCard);
+  });
+
+  setupModalEvents();
+}
+
+// 4. Fonction principale de chargement
+async function loadProjects() {
+  // CORRECTION : On cherche "projects-grid" qui correspond au HTML
+  const container =
+    document.getElementById("projects-grid") ||
+    document.getElementById("projects-container");
+  if (!container) return;
+
+  // Affichage immédiat du skeleton
+  showSkeletons(container);
+
+  try {
+    const response = await fetch("/api/projects");
+    if (!response.ok) throw new Error("Erreur HTTP " + response.status);
+
+    allProjects = await response.json();
+    renderProjectsList(allProjects, container);
   } catch (error) {
-    console.error(error);
-    container.innerHTML = `<p class="error-msg">Impossible de charger les projets.</p>`;
+    console.warn(
+      "API non disponible, affichage des données factices :",
+      error.message,
+    );
+    allProjects = MOCK_PROJECTS;
+    renderProjectsList(allProjects, container);
   }
 }
 
@@ -143,7 +183,7 @@ function setupModalEvents() {
 document.addEventListener("DOMContentLoaded", () => {
   loadProjects();
 
-  // Gestion du Thème Clair / Sombre
+  // Thème Clair / Sombre
   const themeToggle = document.getElementById("theme-toggle");
   if (themeToggle) {
     if (localStorage.getItem("theme") === "light") {
@@ -169,23 +209,19 @@ document.addEventListener("DOMContentLoaded", () => {
     contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("name")?.value.trim();
-      const email = document.getElementById("email")?.value.trim();
-      const subject = document.getElementById("subject")?.value.trim();
-      const content = document.getElementById("content")?.value.trim();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const subject = document.getElementById("subject").value.trim();
+      const content = document.getElementById("content").value.trim();
 
       if (!name || !email || !subject || !content) {
-        if (formResponse) {
-          formResponse.innerText = "❌ Tous les champs sont obligatoires.";
-          formResponse.className = "form-response error";
-        }
+        formResponse.innerText = "❌ Tous les champs sont obligatoires.";
+        formResponse.className = "form-response error";
         return;
       }
 
-      if (submitBtn) {
-        submitBtn.innerText = "Envoi en cours...";
-        submitBtn.disabled = true;
-      }
+      submitBtn.innerText = "Envoi en cours...";
+      submitBtn.disabled = true;
 
       try {
         const response = await fetch("/api/messages", {
@@ -195,27 +231,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         const result = await response.json();
         if (response.ok) {
-          if (formResponse) {
-            formResponse.innerText = "✨ " + result.message;
-            formResponse.className = "form-response success";
-          }
+          formResponse.innerText = "✨ " + result.message;
+          formResponse.className = "form-response success";
           contactForm.reset();
         } else {
-          if (formResponse) {
-            formResponse.innerText = "❌ " + result.message;
-            formResponse.className = "form-response error";
-          }
-        }
-      } catch (error) {
-        if (formResponse) {
-          formResponse.innerText = "❌ Impossible de joindre le serveur.";
+          formResponse.innerText = "❌ " + result.message;
           formResponse.className = "form-response error";
         }
+      } catch (error) {
+        formResponse.innerText = "❌ Impossible de joindre le serveur.";
+        formResponse.className = "form-response error";
       } finally {
-        if (submitBtn) {
-          submitBtn.innerText = "Envoyer le message";
-          submitBtn.disabled = false;
-        }
+        submitBtn.innerText = "Envoyer le message";
+        submitBtn.disabled = false;
       }
     });
   }

@@ -32,7 +32,7 @@ body.light-mode {
   --card-border: #e5e7eb;
   --text-main: #111827;
   --text-color: #333333;
-  --text-muted: #000000;
+  --text-muted: #6b7280;
   --badge-bg: #e2e8f0;
   --badge-border: #cbd5e1;
   --badge-text: #475569;
@@ -110,7 +110,7 @@ nav a::after {
   left: 0;
   width: 0;
   height: 2px;
-  background-color: var(--link-hover);
+  background-color: #38bdf8;
   transition: width 0.2s ease;
 }
 
@@ -191,7 +191,7 @@ nav a:hover::after {
 
 input:checked ~ .slider {
   background-color: #0284c7;
-  border-color: var(--link-hover);
+  border-color: #38bdf8;
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
 }
 
@@ -559,9 +559,7 @@ input:checked ~ .slider .icon-sun {
   margin-bottom: 8px;
   text-align: center;
   letter-spacing: -0.05em;
-  background: linear-gradient(to right, var(--text-main), var(--link-hover));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-main);
 }
 
 .contact-subtitle {
@@ -1053,251 +1051,4 @@ input:checked ~ .slider .icon-sun {
   margin-top: 15px;
   font-size: 0.9rem;
   font-weight: 500;
-}
-/* =====================================================================
-   SECTION PROFILE
-   ===================================================================== */
-/* =====================================================================
-   SECTION PROFILE (Gère automatiquement le thème sombre / clair)
-   ===================================================================== */
-
-/* Container principal */
-.about-card {
-  max-width: 1100px;
-  margin: 0 auto;
-  background-color: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 16px;
-  padding: 32px;
-  color: var(--text-main);
-  box-shadow: 0 10px 30px var(--shadow-card);
-  transition:
-    background-color 0.3s ease,
-    border-color 0.3s ease,
-    color 0.3s ease;
-}
-
-/* En-tête profil */
-.profile-header {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--card-border);
-  margin-bottom: 28px;
-  transition: border-color 0.3s ease;
-}
-
-.profile-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 2px solid #38bdf8;
-  object-fit: cover;
-}
-
-.profile-info h2 {
-  font-size: 1.8rem;
-  margin: 0 0 4px 0;
-  background: linear-gradient(to right, var(--text-main), var(--link-hover));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  margin: 0;
-  transition: color 0.3s ease;
-}
-
-.status-badge {
-  display: inline-block;
-  margin-top: 8px;
-  padding: 4px 12px;
-  background: var(--badge-bg);
-  color: var(--link-hover);
-  border: 1px solid var(--badge-border);
-  border-radius: 20px;
-  font-size: 0.8rem;
-  transition: all 0.3s ease;
-}
-
-/* Organisation en 2 colonnes */
-.about-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr; /* Bio à gauche, Compétences à droite */
-  gap: 40px;
-  align-items: start;
-}
-
-/* Colonne Bio */
-.about-bio h2,
-.about-skills h2 {
-  font-size: 1.4rem;
-  margin-bottom: 16px;
-  color: var(--text-main);
-  transition: color 0.3s ease;
-}
-
-.about-bio p {
-  color: var(--text-muted);
-  line-height: 1.6;
-  font-size: 0.95rem;
-  margin-bottom: 16px;
-  transition: color 0.3s ease;
-}
-
-.bio-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.btn-primary {
-  background: #38bdf8;
-  color: #0b0f19;
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-}
-
-.btn-primary:hover {
-  background: #0ea5e9;
-}
-
-.btn-secondary {
-  border: 1px solid var(--badge-border);
-  background-color: var(--badge-bg);
-  color: var(--text-main);
-  padding: 10px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.btn-secondary:hover {
-  border-color: var(--link-hover);
-  color: var(--link-hover);
-}
-
-.bio-links {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-/* Colonne Compétences */
-.skills-category {
-  margin-bottom: 18px;
-}
-
-.skills-category h3 {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  margin-bottom: 10px;
-  transition: color 0.3s ease;
-}
-
-/* Cartes de compétences */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
-  gap: 10px;
-}
-
-.skill-card {
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 10px;
-  padding: 10px 6px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.3s ease;
-}
-
-.skill-card .skill-icon-svg {
-  width: 1.8rem;
-  height: 1.8rem;
-  object-fit: contain;
-  display: block;
-}
-
-.skill-card span {
-  font-size: 0.75rem;
-  color: var(--text-main);
-  transition: color 0.3s ease;
-}
-
-.skill-card:hover {
-  border-color: var(--link-hover);
-  transform: translateY(-2px);
-}
-
-/* Ajustement des icônes SVG entièrement noires (ex: Express.js, GitHub) */
-.skill-card .icon-invert {
-  filter: invert(1);
-  transition: filter 0.3s ease;
-}
-
-/* En mode clair, on retire l'inversion de couleur pour ces icônes */
-body.light-mode .skill-card .icon-invert {
-  filter: invert(0);
-}
-
-/* Adaptabilité Mobile */
-@media (max-width: 850px) {
-  .about-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Animation Skeleton Loader */
-.skeleton-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 16px;
-  height: 380px;
-  overflow: hidden;
-  position: relative;
-}
-
-.skeleton-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  transform: translateX(-100%);
-  background-image: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0,
-    rgba(255, 255, 255, 0.05) 20%,
-    rgba(255, 255, 255, 0.1) 60%,
-    rgba(255, 255, 255, 0)
-  );
-  animation: shimmer 1.5s infinite;
-}
-
-body.light-mode .skeleton-card::after {
-  background-image: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0) 0,
-    rgba(0, 0, 0, 0.03) 20%,
-    rgba(0, 0, 0, 0.08) 60%,
-    rgba(0, 0, 0, 0)
-  );
-}
-
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
 }

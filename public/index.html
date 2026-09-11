@@ -3,9 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- À ajouter dans la balise <head> de ton index.html -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
     <title>Portfolio | Yassin RIAHI</title>
     <!-- Chemin absolu vers le CSS -->
-    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="../dev/dev.css" />
+    <link rel="icon" type="svg" href="../../doc/logo_YR_gradient.svg" />
   </head>
   <body>
     <header>
@@ -56,9 +66,242 @@
     </header>
 
     <main>
+      <section class="about-card">
+        <!-- En-tête du profil -->
+        <div class="profile-header">
+          <img
+            src="../../images/pp_profile.jpg"
+            alt="Yassin RIAHI"
+            class="profile-avatar"
+          />
+          <div class="profile-info">
+            <h2>À propos de moi</h2>
+            <p class="subtitle">
+              Yassin RIAHI — Étudiant en 2ᵉ année de Bachelor Passerelle
+              Ingénieur à CESI Lyon
+            </p>
+            <!-- Optionnel : Badge de disponibilité -->
+            <span class="status-badge">
+              Recherche d'un stage | 8 à 12 semaines | Développement /
+              Cybersécurité</span
+            >
+          </div>
+        </div>
+
+        <!-- Grille principale à 2 colonnes -->
+        <div class="about-grid">
+          <!-- Colonne Gauche : Parcours -->
+          <div class="about-bio">
+            <h2>Mon Parcours</h2>
+            <p>
+              Je suis un jeune développeur web autodidacte et passionné. En
+              formation au CESI Lyon, je conçois des applications modernes en
+              m'intéressant particulièrement à l'architecture logicielle et à la
+              cybersécurité.
+            </p>
+            <p>
+              Motivé par des projets concrets, je m'efforce de développer mes
+              compétences en cherchant toujours à y ajouter de nouvelles
+              fonctionnalités. Je suis constamment à la recherche de nouvelles
+              opportunités pour apprendre et grandir dans ce domaine.
+            </p>
+
+            <!-- Bouton CV / Liens (Optionnel) -->
+            <div class="bio-actions">
+              <a href="#contact" class="btn-primary">Me contacter</a>
+              <a
+                href="../../doc/CV_YASSIN_RIAHI.docx"
+                target="_blank"
+                class="btn-secondary"
+              >
+                Télécharger mon CV</a
+              >
+            </div>
+            <div class="bio-links">
+              <a
+                href="https://github.com/yassin-cesi"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-primary"
+                >Mon Github <i class="fa-brands fa-github"></i
+              ></a>
+              <a
+                href="https://www.linkedin.com/in/yassin-riahi-2125171b4/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-secondary"
+                >Mon Linkedin <i class="fa-brands fa-linkedin"></i
+              ></a>
+            </div>
+          </div>
+
+          <!-- Colonne Droite : Compétences (Intégrées directement sans sous-carte) -->
+          <div class="about-skills">
+            <h2>Compétences</h2>
+
+            <!-- Languages & Core -->
+            <div class="skills-category">
+              <h3>Languages & Core</h3>
+              <div class="skills-grid">
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+                    alt="HTML5"
+                    class="skill-icon-svg"
+                  />
+                  <span>HTML5</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+                    alt="CSS3"
+                    class="skill-icon-svg"
+                  />
+                  <span>CSS3</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                    alt="JavaScript"
+                    class="skill-icon-svg"
+                  />
+                  <span>JavaScript</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg"
+                    alt="Python"
+                    class="skill-icon-svg"
+                  />
+                  <span>Python</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg"
+                    alt="C++"
+                    class="skill-icon-svg"
+                  />
+                  <span>C++</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg"
+                    alt="C#"
+                    class="skill-icon-svg"
+                  />
+                  <span>C#</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Frameworks & Libraries -->
+            <div class="skills-category">
+              <h3>Frameworks & Libraries</h3>
+              <div class="skills-grid">
+                <div class="skill-card active">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg"
+                    alt="React"
+                    class="skill-icon-svg"
+                  />
+                  <span>React</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vuejs/vuejs-original.svg"
+                    alt="Vue.js"
+                    class="skill-icon-svg"
+                  />
+                  <span>Vue.js</span>
+                </div>
+                <div class="skill-card active">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg"
+                    alt="Node.js"
+                    class="skill-icon-svg"
+                  />
+                  <span>Node.js</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg"
+                    alt="Express.js"
+                    class="skill-icon-svg icon-invert"
+                  />
+                  <span>Express.js</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dotnetcore/dotnetcore-original.svg"
+                    alt="ASP.NET Core"
+                    class="skill-icon-svg"
+                  />
+                  <span>ASP.NET Core</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Data & Tools -->
+            <div class="skills-category">
+              <h3>Data & Tools</h3>
+              <div class="skills-grid">
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+                    alt="MySQL"
+                    class="skill-icon-svg"
+                  />
+                  <span>MySQL</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+                    alt="Git & GitHub"
+                    class="skill-icon-svg icon-invert"
+                  />
+                  <span>Git & GitHub</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postman/postman-original.svg"
+                    alt="Postman"
+                    class="skill-icon-svg"
+                  />
+                  <span>Postman</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg"
+                    alt="Figma"
+                    class="skill-icon-svg"
+                  />
+                  <span>Figma</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg"
+                    alt="VSCode"
+                    class="skill-icon-svg"
+                  />
+                  <span>VSCode</span>
+                </div>
+                <div class="skill-card">
+                  <img
+                    src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/visualstudio/visualstudio-plain.svg"
+                    alt="Visual Studio"
+                    class="skill-icon-svg"
+                  />
+                  <span>Visual Studio</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="projects">
         <h2>Mes Réalisations</h2>
-        <div id="projects-container" class="projects-grid"></div>
+        <div id="projects-grid" class="projects-grid"></div>
         <div id="project-modal" class="modal">
           <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -134,6 +377,6 @@
     </section>
 
     <!-- Chemin absolu vers le JS -->
-    <script src="/js/main.js"></script>
+    <script src="../dev/dev.js" defer></script>
   </body>
 </html>
