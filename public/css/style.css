@@ -1064,7 +1064,7 @@ input:checked ~ .slider .icon-sun {
 /* Container principal */
 .about-card {
   max-width: 1100px;
-  margin: 0 auto;
+  margin: 60px auto;
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 16px;
